@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --ink:#15161c; --ink2:#4a4d5a; --mute:#7a7e8c; --line:#e3e5ea; --accent:#15161c; --good:#00845b; --warn:#b7790f; --bad:#d0423b; --soft:#eef0f3;
+    --side-w:232px; --side-bg:#0c0d13; --side-line:#1c1d29; --side-text:#c4c6d4; --side-muted:#6b6d85; --brand:#00e5a0; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 'Inter', system-ui, -apple-system, sans-serif; -webkit-text-size-adjust:100%; }
+  .side { position:fixed; top:0; left:0; bottom:0; width:var(--side-w); z-index:90; background:var(--side-bg); border-right:1px solid var(--side-line); display:flex; flex-direction:column; padding:16px 12px; gap:2px; color:var(--side-text); overflow-y:auto; transition:transform .2s ease; }
+  .side-head { padding:4px 8px 20px; min-height:40px; display:flex; flex-direction:column; line-height:1; }
+  .side-head b { font-family:'Bebas Neue', sans-serif; font-weight:400; font-size:24px; letter-spacing:.04em; color:#f2f3f7; display:flex; align-items:center; gap:8px; }
+  .side-head small { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--side-muted); margin-top:4px; }
+  .side img.logo { width:26px; height:26px; border-radius:6px; object-fit:cover; }
+  .side .grp { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:.14em; color:var(--side-muted); padding:16px 12px 8px; }
+  .side a.nv { display:flex; align-items:center; gap:12px; height:40px; padding:0 12px; border-radius:8px; color:var(--side-text); text-decoration:none; font-size:14px; font-weight:500; white-space:nowrap; position:relative; }
+  .side a.nv svg { width:18px; height:18px; flex:0 0 18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .side a.nv:hover { background:#151621; color:#fff; }
+  .side a.nv[aria-current="page"] { background:#161a1d; color:#fff; }
+  .side a.nv[aria-current="page"]::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:3px; border-radius:2px; background:var(--brand); }
+  .side a.nv[aria-current="page"] svg { color:var(--brand); }
+  .side a.nv:focus-visible, .side .out:focus-visible, .topbar button:focus-visible { outline:2px solid #fff; outline-offset:-2px; }
+  .side-foot { margin-top:auto; border-top:1px solid var(--side-line); padding:12px 4px 0; }
+  .side .out { display:flex; align-items:center; width:100%; height:36px; padding:0 8px; border-radius:8px; background:transparent; border:0; color:var(--side-text); font:500 13px 'Inter', system-ui, sans-serif; min-height:0; text-align:left; }
+  .side .out:hover { background:#151621; color:#fff; }
+  .topbar { display:none; }
+  .backdrop { display:none; }
+  main { margin-left:var(--side-w); max-width:1100px; padding:32px 32px 80px; }
+  body.bare .side, body.bare .topbar { display:none; } body.bare main { margin:0 auto; max-width:520px; padding:32px 16px; }
+  @media (max-width:767px) {
+    .side { width:264px; transform:translateX(-100%); z-index:96; }
+    body.drawer .side { transform:translateX(0); box-shadow:0 0 40px rgba(0,0,0,.35); }
+    .backdrop { display:block; position:fixed; inset:0; background:rgba(10,11,16,.45); z-index:95; opacity:0; pointer-events:none; transition:opacity .2s; }
+    body.drawer .backdrop { opacity:1; pointer-events:auto; }
+    .topbar { display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:80; height:56px; padding:0 16px; background:var(--side-bg); color:#fff; }
+    .topbar b { font-family:'Bebas Neue', sans-serif; font-weight:400; font-size:20px; letter-spacing:.04em; }
+    .topbar span { margin-left:auto; font-size:13px; color:var(--side-text); font-weight:500; }
+    .topbar button { background:transparent; border:1px solid #262838; color:#fff; width:36px; height:36px; min-height:36px; padding:0; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; }
+    .topbar svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; }
+    main { margin-left:0; padding:16px 16px 80px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .side, .backdrop { transition:none; } }
+  h1 { font:600 24px/1.2 'Inter', system-ui, sans-serif; letter-spacing:-0.01em; margin:0 0 20px; }
+  h2 { font:600 14px/1.3 'Inter', system-ui, sans-serif; margin:28px 4px 10px; color:var(--ink); }
+  h3 { font-size:16px; margin:0 0 6px; }
+  p { margin:0 0 10px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:12px; box-shadow:0 1px 2px rgba(20,22,30,.03); }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .grow { flex:1 1 auto; min-width:0; }
+  .mute { color:var(--mute); } .small { font-size:14px; } .right { text-align:right; }
+  button, .btn { font:inherit; font-weight:600; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:10px; padding:11px 16px; cursor:pointer; min-height:44px; }
+  button.ghost { background:transparent; color:var(--ink); border-color:var(--line); }
+  button.danger { background:transparent; color:var(--bad); border-color:var(--line); }
+  button.link { background:none; border:0; color:var(--ink); text-decoration:underline; padding:6px 0; min-height:0; font-weight:500; }
+  button:disabled { opacity:.5; cursor:default; }
+  label { display:block; font-size:14px; font-weight:600; margin:0 0 5px; }
+  .hint { font-weight:400; color:var(--mute); }
+  input, select { font:inherit; width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); min-height:44px; }
+  input:focus, select:focus, button:focus-visible { outline:2px solid var(--ink); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+  .grid .full { grid-column:1 / -1; }
+  @media (max-width:560px) { .grid { grid-template-columns:1fr; } }
+  .err { color:var(--bad); font-size:14px; margin-top:4px; }
+  .banner { border-radius:10px; padding:12px 14px; margin-bottom:12px; font-size:15px; }
+  .banner.bad { background:#fdecea; color:#7a1c16; } .banner.good { background:#e8f5ee; color:#14532d; } .banner.info { background:var(--soft); }
+  .pill { display:inline-block; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:99px; background:var(--soft); color:var(--mute); white-space:nowrap; }
+  .pill.good { background:#e8f5ee; color:var(--good); } .pill.warn { background:#fff3dd; color:var(--warn); } .pill.bad { background:#fdecea; color:var(--bad); }
+  .item { display:flex; gap:12px; align-items:center; padding:14px 0; border-top:1px solid var(--line); cursor:pointer; background:none; border-left:0; border-right:0; border-bottom:0; width:100%; text-align:left; color:inherit; border-radius:0; font-weight:400; min-height:0; }
+  .item:first-child { border-top:0; }
+  .item .name { font-weight:600; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-top:1px solid var(--line); vertical-align:top; }
+  th { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--mute); font-weight:600; border-top:0; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 12px; }
+  .tabs button { background:var(--soft); color:var(--ink); border-color:var(--soft); padding:8px 13px; min-height:38px; font-weight:600; font-size:14px; }
+  .tabs button[aria-pressed="true"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .meal { padding:10px 0; border-top:1px solid var(--line); } .meal:first-child { border-top:0; }
+  .linkbox { font-family:ui-monospace, Menlo, monospace; font-size:13px; word-break:break-all; background:var(--soft); border-radius:8px; padding:10px; margin:8px 0; }
+  .spin { display:inline-block; width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--ink); border-radius:50%; animation:sp 0.8s linear infinite; vertical-align:-3px; margin-right:8px; }
+  @keyframes sp { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation:none; } }
+  svg.chart { width:100%; height:120px; display:block; }
+  button, .btn { color:var(--on-accent, #fff); }
+  .tabs button[aria-pressed="true"] { color:var(--on-accent, #fff); }
+  .edit { display:grid; gap:8px; }
+  .erow { display:grid; grid-template-columns:minmax(0,1fr) 64px 84px 40px; gap:6px; align-items:center; }
+  .frow { display:grid; grid-template-columns:minmax(0,1fr) 92px 44px 40px; gap:6px; align-items:center; }
+  .erow input, .erow select, .frow input { padding:9px 8px; min-height:42px; }
+  .ex { padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--line); } .ex:last-child { border-bottom:0; }
+  .erow2 { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; } .erow2 input, .erow2 select:nth-of-type(3) { grid-column:1 / -1; } .erow2 select, .erow2 input { padding:9px 8px; min-height:42px; font-size:14px; }
+  .ehead { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--mute); font-weight:600; }
+  button.x { background:none; border:1px solid var(--line); color:var(--mute); padding:0; width:40px; min-height:42px; font-size:18px; line-height:1; }
+  button.mini { padding:6px 12px; min-height:36px; font-size:14px; background:transparent; color:var(--ink); border-color:var(--line); }
+  textarea { font:inherit; width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; min-height:96px; resize:vertical; }
+  .bar { position:sticky; bottom:12px; z-index:4; background:var(--ink); color:#fff; border-radius:12px; padding:12px 14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; box-shadow:0 6px 24px rgba(0,0,0,.18); margin-top:14px; }
+  .bar button { background:#fff; color:var(--ink); border-color:#fff; } .bar button.ghost { background:transparent; color:#fff; border-color:rgba(255,255,255,.4); }
+  .changed { border-color:var(--warn); }
+  .swatches { display:flex; flex-wrap:wrap; gap:10px; } .swatches button { width:44px; height:44px; min-height:44px; padding:0; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 1px var(--line); }
+  .swatches button[aria-pressed="true"] { box-shadow:0 0 0 3px var(--ink); }
+  .phone { width:250px; border:8px solid #16161a; border-radius:30px; background:#faf9f6; overflow:hidden; margin:0 auto; font-size:13px; }
+  .phone .top { display:flex; align-items:center; gap:8px; padding:12px; background:#fff; border-bottom:1px solid #e8e3db; font-weight:700; letter-spacing:.05em; text-transform:uppercase; font-size:12px; }
+  .phone .top img { width:24px; height:24px; border-radius:6px; }
+  .phone .body { padding:12px; display:grid; gap:10px; }
+  .phone .pc { background:#fff; border:1px solid #e8e3db; border-radius:12px; padding:10px; }
+  .phone .pb { border-radius:99px; padding:9px 12px; text-align:center; font-weight:700; color:#fff; }
+  .phone .bar2 { height:8px; border-radius:99px; background:#efece6; overflow:hidden; } .phone .bar2 i { display:block; height:100%; width:62%; }
+  .two { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:18px; align-items:start; } @media (max-width:720px) { .two { grid-template-columns:1fr; } .erow { grid-template-columns:1fr 1fr 40px; } .ex .erow > input:first-child { grid-column:1 / -1; } .erow.ehead, .frow.ehead { display:none; } .frow { grid-template-columns:1fr 44px 40px; } .frow > input:first-child { grid-column:1 / -1; } }
+  .checks { display:flex; flex-wrap:wrap; gap:8px; } .checks label { display:flex; align-items:center; gap:6px; font-weight:400; margin:0; border:1px solid var(--line); border-radius:99px; padding:7px 12px; background:#fff; }
+  .checks input { width:auto; min-height:0; }
+</style>
+</head>
+<body class="bare">
+<div class="topbar"><button type="button" id="menu" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><b id="brand2">Coach</b><span id="where"></span></div>
+<aside class="side" id="side"><div class="side-head"><b><img class="logo" id="logo" alt="" hidden><span id="brand">Coach</span></b><small>Coach dashboard</small></div><nav id="nav" aria-label="Sections"></nav><div class="side-foot" id="who"></div></aside>
+<div class="backdrop" id="backdrop"></div>
+<main id="app" aria-live="polite"></main>
+<script>
+(function () {
+  'use strict';
+  var LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var API = LOCAL ? '/api' : 'https://vpvgakcffgvzhpibgwzq.supabase.co/functions/v1/api';
+  var KEY = 'cp_session_v1';
+  var DASH = '../dashboard.html';                      // the coach dashboard (the daily screen); this app is its plan builder
+  var S = { session: null, coach: null, options: null, timer: null };
+  try { S.session = localStorage.getItem(KEY); } catch (e) {}
+
+  // ── tiny DOM helpers: every piece of text goes through textContent ──────
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      var v = attrs[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'class') n.className = v;
+      else if (k === 'text') n.textContent = v;
+      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v === true ? '' : v);
+    });
+    (function add(c) {
+      if (c == null || c === false) return;
+      if (Array.isArray(c)) { c.forEach(add); return; }
+      n.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(String(c)) : c);
+    })(kids);
+    return n;
+  }
+  var app = document.getElementById('app');
+  function show(nodes) { stopTimer(); app.replaceChildren.apply(app, Array.isArray(nodes) ? nodes.filter(Boolean) : [nodes]); window.scrollTo(0, 0); }
+  function stopTimer() { if (S.timer) { clearTimeout(S.timer); S.timer = null; } }
+  function banner(kind, text) { return el('div', { class: 'banner ' + kind, role: kind === 'bad' ? 'alert' : 'status', text: text }); }
+  function oops(e) {
+    if (e && e.message === 'signed_out') return;
+    if (window.console) console.error(e);
+    show(banner('bad', e instanceof TypeError && /fetch|network|load/i.test(String(e.message)) ? 'Could not reach the server. Check your connection.' : 'Something went wrong on this screen. Reload the page and try again.'));
+  }
+  function busy(text) { return el('p', { class: 'mute' }, [el('span', { class: 'spin' }), text]); }
+
+  function call(type, body) {
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ type: type, session: S.session }, body || {})) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.ok === false && j.error === 'unauthorized' && type !== 'cpLogin') { signOut(true); throw new Error('signed_out'); }
+        return j;
+      });
+  }
+  var MSG = {
+    bad_login: 'That email and password do not match.', locked: 'Too many tries. Wait 15 minutes and try again.', suspended: 'This account is paused. Contact support.',
+    link_invalid: 'This setup link has expired or was already used. Ask for a new one.', password_too_short: 'Use at least 10 characters.',
+    password_too_weak: 'Choose a stronger password.', password_too_long: 'That password is too long.', bad_form: 'Check the client\'s name: letters only.',
+    client_exists: 'You already have a client with this name. Add a last name, or update their plan from their page.',
+    client_limit: 'You have reached your client limit. Contact support to raise it.', too_many_open_builds: 'Three plans are already being built. Finish or discard one first.',
+    build_in_progress: 'A plan for this client is already being built.', not_ready: 'This plan is not ready to publish yet.', write_failed: 'Could not save. Try again.',
+    unknown_client: 'Client not found.', unknown_form: 'That form is no longer there.', bad_update: 'Check the note to your client.', unknown_build: 'Plan not found.'
+  };
+  function say(j) { return (j && (j.detail || MSG[j.error])) || 'Something went wrong. Try again.'; }
+  function when(iso) {
+    if (!iso) return 'never';
+    var d = Math.floor((Date.now() - Date.parse(iso)) / 86400000);
+    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 14 ? d + ' days ago' : new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+  }
+  function lum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex.substr(i, 2), 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+  function applyTheme(accent) {
+    var a = /^#[0-9a-f]{6}$/i.test(accent || '') ? accent : '#00e5a0';
+    document.documentElement.style.setProperty('--brand', a);
+  }
+  var ICON = {
+    'switch': '<path d="M4 8h13"/><path d="M13 4l4 4-4 4"/><path d="M20 16H7"/><path d="M11 12l-4 4 4 4"/>',
+    today: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+    clients: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 010 6.4"/><path d="M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/>',
+    checkins: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 13l2 2 4-4"/>',
+    activity: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+    'new': '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+    plans: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+    templates: '<rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/>',
+    look: '<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="15.5" cy="10" r="1.2"/><path d="M12 21a3 3 0 010-6h2a3 3 0 003-3"/>'
+  };
+  function icon(name) {   // fixed drawings from the table above, never text from the server
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = ICON[name] || ''; return svg;
+  }
+  function setHeader(section) {
+    var brand = S.coach ? S.coach.brand : 'Coach';
+    document.getElementById('brand').textContent = brand; document.getElementById('brand2').textContent = brand;
+    document.title = S.coach ? S.coach.brand + ' - Plans' : 'Coach';
+    applyTheme(S.coach && S.coach.accent);
+    var logo = document.getElementById('logo');
+    if (S.coach && S.coach.logo) { logo.src = 'data:image/png;base64,' + S.coach.logo; logo.hidden = false; } else { logo.hidden = true; logo.removeAttribute('src'); }
+    var nav = document.getElementById('nav'); nav.replaceChildren();
+    var who = document.getElementById('who'); who.replaceChildren();
+    document.body.classList.toggle('bare', !S.coach); document.body.classList.remove('drawer');
+    if (!S.coach) return;
+    if (section) S.section = section;
+    var NAMES = { 'new': 'New client', clients: 'Plans and forms', templates: 'Templates', look: 'Your look', 'switch': 'Bring clients over' };
+    document.getElementById('where').textContent = NAMES[S.section] || '';
+    function link(ic, text, href, current) {
+      var a = el('a', { class: 'nv', href: href, 'aria-current': current ? 'page' : null }); a.appendChild(icon(ic)); a.appendChild(el('span', { text: text })); return a;
+    }
+    nav.appendChild(el('div', { class: 'grp', text: 'COACHING' }));
+    nav.appendChild(link('today', 'Today', DASH + '#/today'));
+    nav.appendChild(link('clients', 'Clients', DASH + '#/clients'));
+    nav.appendChild(link('checkins', 'Check-ins', DASH + '#/check-ins'));
+    nav.appendChild(link('activity', 'Activity', DASH + '#/activity'));
+    nav.appendChild(el('div', { class: 'grp', text: 'PLANS' }));
+    nav.appendChild(link('new', 'New client', '#new', S.section === 'new'));
+    nav.appendChild(link('plans', 'Plans and forms', '#plans', S.section === 'clients'));
+    nav.appendChild(link('templates', 'Templates', '#templates', S.section === 'templates'));
+    nav.appendChild(link('look', 'Your look', '#look', S.section === 'look'));
+    nav.appendChild(link('switch', 'Bring clients over', '#switch', S.section === 'switch'));
+    who.appendChild(el('button', { class: 'out', type: 'button', text: 'Sign out', onclick: function () { call('cpLogout').catch(function () {}); signOut(false); } }));
+  }
+  document.getElementById('menu').addEventListener('click', function () { document.body.classList.toggle('drawer'); });
+  document.getElementById('backdrop').addEventListener('click', function () { document.body.classList.remove('drawer'); });
+  function signOut(expired) {
+    S.session = null; S.coach = null; try { localStorage.removeItem(KEY); localStorage.removeItem('sbo_coach_token'); localStorage.removeItem('cp_coach_v1'); } catch (e) {}
+    location.replace(DASH);
+  }
+  function options() {
+    if (S.options) return Promise.resolve(S.options);
+    return fetch('options.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (o) { S.options = o; return o; });
+  }
+
+  // ── sign in / first-time setup ───────────────────────────────────────────
+  function field(label, input, hint) {
+    var id = 'f_' + Math.random().toString(36).slice(2, 8); input.id = id;
+    return el('div', null, [el('label', { for: id }, [label, hint ? el('span', { class: 'hint', text: '  ' + hint }) : null]), input, el('div', { class: 'err', 'data-err': input.name || '' })]);
+  }
+  function loginView(note) {
+    var email = el('input', { type: 'email', name: 'email', autocomplete: 'username', required: true });
+    var pw = el('input', { type: 'password', name: 'password', autocomplete: 'current-password', required: true });
+    var msg = el('div');
+    var btn = el('button', { type: 'submit', text: 'Sign in' });
+    var form = el('form', { class: 'card', onsubmit: function (e) {
+      e.preventDefault(); btn.disabled = true; msg.replaceChildren();
+      call('cpLogin', { email: email.value, password: pw.value }).then(function (j) {
+        btn.disabled = false;
+        if (!j.ok) { msg.appendChild(banner('bad', say(j))); return; }
+        S.session = j.session; S.coach = j.coach; try { localStorage.setItem(KEY, j.session); localStorage.setItem('sbo_coach_token', j.session); localStorage.setItem('cp_coach_v1', JSON.stringify(j.coach)); } catch (e2) {}
+        setHeader(); homeView();
+      }).catch(function () { btn.disabled = false; msg.appendChild(banner('bad', 'Could not reach the server. Check your connection.')); });
+    } }, [msg, field('Email', email), el('div', { style: 'height:12px' }), field('Password', pw), el('div', { style: 'height:16px' }), btn]);
+    show([el('h1', { text: 'Sign in' }), note ? banner('info', note) : null, form]);
+  }
+  function setupView(token) {
+    show(busy('Checking your link'));
+    call('cpSetupInspect', { token: token }).then(function (j) {
+      if (!j.ok) { show([el('h1', { text: 'Set up your account' }), banner('bad', say(j))]); return; }
+      var pw = el('input', { type: 'password', name: 'password', autocomplete: 'new-password', minlength: 10, required: true });
+      var pw2 = el('input', { type: 'password', name: 'password2', autocomplete: 'new-password', minlength: 10, required: true });
+      var msg = el('div'); var btn = el('button', { type: 'submit', text: 'Save password' });
+      show([el('h1', { text: 'Welcome, ' + j.name }), el('p', { class: 'mute', text: 'Choose a password for ' + j.email + '. You will use it to sign in from now on.' }),
+        el('form', { class: 'card', onsubmit: function (e) {
+          e.preventDefault(); msg.replaceChildren();
+          if (pw.value !== pw2.value) { msg.appendChild(banner('bad', 'The two passwords do not match.')); return; }
+          btn.disabled = true;
+          call('cpSetup', { token: token, password: pw.value }).then(function (r) {
+            btn.disabled = false;
+            if (!r.ok) { msg.appendChild(banner('bad', say(r))); return; }
+            history.replaceState(null, '', location.pathname);
+            call('cpLogin', { email: j.email, password: pw.value }).then(function (l) {       // straight in: no second sign-in screen
+              if (!l.ok) { loginView('Password saved. Sign in to start.'); return; }
+              try { localStorage.setItem(KEY, l.session); localStorage.setItem('sbo_coach_token', l.session); localStorage.setItem('cp_coach_v1', JSON.stringify(l.coach)); } catch (e2) {}
+              location.replace(DASH);
+            }).catch(function () { loginView('Password saved. Sign in to start.'); });
+          });
+        } }, [msg, field('New password', pw, 'at least 10 characters'), el('div', { style: 'height:12px' }), field('Type it again', pw2), el('div', { style: 'height:16px' }), btn])]);
+    });
+  }
+
+  // ── your own saved plans ──────────────────────────────────────────────────
+  function templateSaver(buildId, b) {
+    var box = el('div', { style: 'margin-bottom:12px' });
+    var open = el('button', { type: 'button', class: 'link', text: 'Save this plan as one of my templates' });
+    open.addEventListener('click', function () {
+      var name = el('input', { type: 'text', maxlength: 60, placeholder: 'For example: 5 day cut, my way', 'aria-label': 'Template name' });
+      var meals = el('input', { type: 'checkbox' }); meals.style.width = 'auto'; meals.style.minHeight = '0';
+      var hasMeals = !!(b.form.edits && b.form.edits.meals && Object.keys(b.form.edits.meals).length);
+      var msg = el('div');
+      box.replaceChildren(el('div', { class: 'card' }, [el('h3', { text: 'Save as a template' }),
+        el('p', { class: 'mute small', text: 'It keeps the training plan, the food menu, the length and your training changes. No client details are saved. Use it for any new client and their calories are worked out fresh.' }),
+        name, hasMeals ? el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:500;margin-top:10px' }, [meals, 'Also keep my meal changes (amounts stay exactly as they are here)']) : null, msg,
+        el('div', { class: 'row', style: 'margin-top:12px' }, [el('button', { type: 'button', text: 'Save template', onclick: function (e) {
+          msg.replaceChildren();
+          if (!name.value.trim()) { msg.appendChild(banner('bad', 'Give it a name.')); return; }
+          e.target.disabled = true;
+          call('cpTemplateSave', { buildId: buildId, name: name.value.trim(), includeMeals: meals.checked }).then(function (r) {
+            if (!r.ok) { e.target.disabled = false; msg.appendChild(banner('bad', r.error === 'bad_name' ? 'Use plain letters and numbers in the name.' : r.error === 'too_many_templates' ? 'You have the most templates allowed. Delete one first.' : say(r))); return; }
+            S.templates = null; box.replaceChildren(banner('good', r.replaced ? 'Template updated.' : 'Saved. You will see it under "Start from" when you add a client.'));
+          });
+        } }), el('button', { type: 'button', class: 'ghost', text: 'Cancel', onclick: function () { box.replaceChildren(open); } })])]));
+      name.focus();
+    });
+    box.appendChild(open); return box;
+  }
+  function templates() {
+    if (S.templates) return Promise.resolve(S.templates);
+    return call('cpTemplates').then(function (j) { S.templates = j.ok ? j.templates : []; return S.templates; });
+  }
+  // ── bring clients over from another platform ───────────────────────────────────────────────────────────────────
+  // Three ways in, easiest first: paste a spreadsheet of the clients whose details the coach has; send everyone else
+  // one sign-up link; then publish every plan that is ready in one go and copy all the app links.
+  var IMPORT_COLS = [['firstName', /^(first ?name|first|given ?name)$/], ['lastName', /^(last ?name|last|surname|family ?name)$/], ['name', /^(name|full ?name|client|client ?name)$/],
+    ['sex', /^(sex|gender)$/], ['age', /^(age|years?)$/], ['heightCm', /^height/], ['weightKg', /^(weight|current ?weight|start ?weight|weight ?now|bodyweight)/], ['goalWeightKg', /^(goal ?weight|target ?weight)/],
+    ['goal', /^(goal|aim)$/], ['days', /^(days|training ?days|days ?per ?week|sessions)/], ['where', /^(where|place|gym|location)$/], ['allergies', /^(allerg)/]];
+  function parseClients(text) {
+    var lines = String(text || '').split(/\r?\n/).filter(function (l) { return l.trim(); });
+    if (lines.length < 2) return { error: 'Paste your list with its top row of headings, then at least one client under it.' };
+    var sep = lines[0].indexOf('\t') >= 0 ? '\t' : lines[0].indexOf(';') >= 0 ? ';' : ',';
+    var cells = function (l) { return l.split(sep).map(function (c) { return c.trim().replace(/^"|"$/g, ''); }); };
+    var head = cells(lines[0]).map(function (h) { h = h.toLowerCase().replace(/[()._-]/g, ' ').replace(/\b(cm|kg)\b/g, '').replace(/\s+/g, ' ').trim(); var m = IMPORT_COLS.filter(function (c) { return c[1].test(h); })[0]; return m ? m[0] : null; });
+    if (head.indexOf('name') < 0 && head.indexOf('firstName') < 0) return { error: 'The top row needs a heading called Name (or First name and Last name).' };
+    var rows = lines.slice(1, 51).map(function (l) {
+      var c = cells(l), r = {}; head.forEach(function (k, i) { if (k && c[i] !== undefined && c[i] !== '') r[k] = c[i]; });
+      var f = {}, why = [];
+      var nm = r.name ? r.name.split(/\s+/) : [r.firstName || '', r.lastName || ''];
+      f.firstName = (r.firstName || nm[0] || '').replace(/[^A-Za-z '\-]/g, ''); f.lastName = (r.lastName || nm.slice(1).join(' ') || '').replace(/[^A-Za-z '\-]/g, '');
+      if (!f.firstName) why.push('name');
+      var sx = String(r.sex || '').toLowerCase(); f.sex = /^(m|male|man)$/.test(sx) ? 'male' : /^(f|female|woman)$/.test(sx) ? 'female' : null; if (!f.sex) why.push('sex');
+      var num = function (v) { var n = parseFloat(String(v || '').replace(',', '.')); return isFinite(n) ? n : null; };
+      f.age = num(r.age); if (!(f.age >= 18 && f.age <= 80)) why.push('age 18 to 80');
+      f.heightCm = num(r.heightCm); if (f.heightCm && f.heightCm < 3) f.heightCm = Math.round(f.heightCm * 100); if (!(f.heightCm >= 130 && f.heightCm <= 220)) why.push('height in cm');
+      f.weightKg = num(r.weightKg); if (!(f.weightKg >= 35 && f.weightKg <= 250)) why.push('weight in kg');
+      var gw = num(r.goalWeightKg); if (gw >= 35 && gw <= 250) f.goalWeightKg = gw;
+      var g = String(r.goal || '').toLowerCase();
+      f.goal = /gain|build|bulk|muscle/.test(g) ? 'build_muscle' : /los|cut|fat|lean|shred/.test(g) ? 'lose_fat' : (gw && f.weightKg && gw > f.weightKg ? 'build_muscle' : 'lose_fat');
+      var d = num(r.days), home = /home/.test(String(r.where || '').toLowerCase());
+      f.training = home ? 'home5' : d && d <= 3 ? 'gym3_full_body' : d === 4 ? 'gym4_upper_lower' : 'gym5_ppl_ul';
+      var known = ['egg', 'fish', 'gluten', 'peanut', 'sesame', 'shellfish', 'soy', 'tree_nut', 'dairy'], al = String(r.allergies || '').toLowerCase().replace(/tree ?nuts?/g, 'tree_nut').replace(/nuts\b/g, 'tree_nut').replace(/milk|lactose/g, 'dairy').replace(/wheat/g, 'gluten');
+      f.allergies = known.filter(function (k) { return al.indexOf(k) >= 0; });
+      f.activity = 'moderate'; f.menu = f.allergies.length ? 'freefrom' : 'everyday'; f.mealsPerDay = 4; f.weeks = 12;
+      return { form: f, why: why, line: [f.firstName, f.lastName].join(' ').trim() || l.slice(0, 30) };
+    });
+    return { rows: rows, more: Math.max(0, lines.length - 51) };
+  }
+  function switchView() {
+    setHeader('switch'); show(busy('Loading'));
+    Promise.all([call('cpClients'), call('cpIntakeLink', {}), options()]).then(function (res) {
+      var J = res[0], link = (res[1] && res[1].link) || '', O = res[2];
+      if (!J.ok) { show(banner('bad', say(J))); return; }
+      S.coach = J.coach; setHeader('switch');
+      var coachFirst = String(J.coach.name || '').split(' ')[0];
+      // 1. paste a spreadsheet
+      var ta = el('textarea', { rows: 6, 'aria-label': 'Your client list', placeholder: 'Name\tSex\tAge\tHeight\tWeight\tGoal weight\tDays\nSam Taylor\tMale\t34\t180\t92\t84\t4' });
+      var out = el('div');
+      var tpl = 'Name,Sex,Age,Height cm,Weight kg,Goal weight kg,Goal,Days per week,Where,Allergies\nSam Taylor,Male,34,180,92,84,Lose fat,4,Gym,\nJess Wong,Female,29,165,61,64,Build muscle,3,Home,peanut\n';
+      var check = el('button', { type: 'button', text: 'Check my list', onclick: function () {
+        var P = parseClients(ta.value); out.replaceChildren();
+        if (P.error) { out.appendChild(banner('bad', P.error)); return; }
+        var good = P.rows.filter(function (r) { return !r.why.length; }), bad = P.rows.filter(function (r) { return r.why.length; });
+        var t = el('table', null, [el('thead', null, el('tr', null, [el('th', { text: 'Client' }), el('th', { text: 'Plan they will get' }), el('th', { text: '' })]))]), tb = el('tbody');
+        P.rows.forEach(function (r) {
+          var f = r.form;
+          tb.appendChild(el('tr', null, [el('td', { text: r.line }),
+            el('td', { class: 'small', text: r.why.length ? '' : (f.goal === 'build_muscle' ? 'Build muscle' : 'Lose fat') + ' · ' + ((O.training[f.training] || {}).label || f.training) + (f.allergies.length ? ' · allergy-friendly food' : '') }),
+            el('td', { class: 'small', text: r.why.length ? 'Needs: ' + r.why.join(', ') : 'Ready' })]));
+        });
+        t.appendChild(tb);
+        var go = el('button', { type: 'button', text: 'Build ' + good.length + ' plan' + (good.length === 1 ? '' : 's'), onclick: function () {
+          go.disabled = true; go.textContent = 'Starting';
+          call('cpImport', { rows: good.map(function (r) { return r.form; }) }).then(function (j) {
+            if (!j.ok) { go.disabled = false; go.textContent = 'Try again'; out.appendChild(banner('bad', say(j))); return; }
+            var failed = j.results.filter(function (x) { return !x.ok; });
+            out.replaceChildren.apply(out, [banner('good', j.queued + ' plan' + (j.queued === 1 ? ' is' : 's are') + ' building. Each takes about a minute. You can leave this page; they wait for you in step 3.'),
+              failed.length ? el('div', { class: 'card' }, [el('h3', { text: 'Not started' })].concat(failed.map(function (x) { return el('p', { class: 'small', text: x.name + ': ' + x.why }); }))) : null].filter(Boolean));
+            ta.value = ''; drawReady();
+          }).catch(function () { go.disabled = false; go.textContent = 'Try again'; });
+        } });
+        out.appendChild(el('div', { class: 'card', style: 'margin-top:12px;overflow-x:auto' }, [t,
+          bad.length ? el('p', { class: 'small', style: 'margin-top:10px', text: bad.length + ' row' + (bad.length === 1 ? ' needs' : 's need') + ' fixing in your list. Fix and check again, or build the rest now and add those by hand.' }) : null,
+          P.more ? el('p', { class: 'small', text: 'Only the first 50 are shown. Bring the other ' + P.more + ' after these.' }) : null,
+          good.length ? el('div', { style: 'margin-top:12px' }, [go]) : null]));
+      } });
+      // 2. everyone else: one link
+      var msgText = 'Hey! I have moved my coaching to a new app. Takes 2 minutes: fill this in and your plan will be ready in the app.\n' + link;
+      var copyMsg = el('button', { type: 'button', class: 'ghost', text: 'Copy the message', onclick: function () { navigator.clipboard.writeText(msgText).then(function () { copyMsg.textContent = 'Copied'; setTimeout(function () { copyMsg.textContent = 'Copy the message'; }, 1500); }); } });
+      // 3. publish everything that is ready, collect the app links
+      var ready = el('div');
+      function drawReady() {
+        call('cpClients').then(function (j) {
+          if (!j.ok) return;
+          var builds = j.builds.filter(function (b) { return !b.isUpdate; });
+          var done = builds.filter(function (b) { return b.status === 'built'; }), busyN = builds.filter(function (b) { return b.status === 'queued' || b.status === 'building'; }).length;
+          var stuck = builds.filter(function (b) { return b.status === 'failed'; });
+          var nm = function (b) { return (b.summary && b.summary.name) || [b.form.firstName, b.form.lastName].filter(Boolean).join(' '); };
+          var links = el('div');
+          var pub = el('button', { type: 'button', text: 'Publish all ' + done.length + ' and get their links', onclick: function () {
+            if (!confirm('Publish ' + done.length + ' plan' + (done.length === 1 ? '' : 's') + ' as they are? You can still change any of them afterwards.')) return;
+            pub.disabled = true; var got = [], i = 0;
+            (function next() {
+              if (i >= done.length) {
+                var text = got.map(function (g) { return g.name + ': ' + g.link; }).join('\n');
+                var cp = el('button', { type: 'button', text: 'Copy all names and links', onclick: function () { navigator.clipboard.writeText(text).then(function () { cp.textContent = 'Copied'; }); } });
+                links.replaceChildren(el('div', { class: 'card', style: 'margin-top:12px' }, [el('h3', { text: 'Send each client their own link' }),
+                  el('p', { class: 'mute small', text: 'These show once. Copy them now. Each link opens that client\'s app; they go live over the next few minutes. You can always make a new link from a client\'s page.' }),
+                  el('div', { class: 'linkbox', style: 'white-space:pre-wrap', text: text || 'Nothing was published.' }), el('div', { style: 'height:8px' }), cp]));
+                pub.textContent = 'Published'; return;
+              }
+              var b = done[i++]; pub.textContent = 'Publishing ' + i + ' of ' + done.length;
+              call('cpPublish', { buildId: b.id }).then(function (r) { if (r.ok && r.link) got.push({ name: nm(b), link: r.link }); next(); }).catch(next);
+            })();
+          } });
+          ready.replaceChildren.apply(ready, [
+            el('p', { class: 'small', text: done.length + ' ready to publish' + (busyN ? ' · ' + busyN + ' still building' : '') + (stuck.length ? ' · ' + stuck.length + ' need a change' : '') + '.' }),
+            done.length ? el('div', { class: 'card' }, done.map(function (b) { return el('button', { class: 'item', onclick: function () { buildView(b.id); } }, [el('span', { class: 'grow' }, [el('span', { class: 'name', text: nm(b) }), el('div', { class: 'mute small', text: 'Tap to look it over or change it first' })]), pill(b.status)]); })) : null,
+            stuck.length ? el('div', { class: 'card' }, stuck.map(function (b) { return el('button', { class: 'item', onclick: function () { buildView(b.id); } }, [el('span', { class: 'grow' }, [el('span', { class: 'name', text: nm(b) }), el('div', { class: 'mute small', text: 'Tap to see what needs changing' })]), pill(b.status)]); })) : null,
+            done.length ? el('div', { style: 'margin-top:12px' }, [pub]) : null, links,
+            busyN ? el('button', { type: 'button', class: 'link', style: 'margin-top:8px', text: 'Refresh', onclick: drawReady }) : null].filter(Boolean));
+        }).catch(function () {});
+      }
+      drawReady();
+      show([el('h1', { text: 'Bring your clients over' }),
+        el('p', { class: 'mute', text: 'Moving from another app? Three steps, and nothing reaches a client until you publish.' }),
+        el('h2', { text: '1 · Clients whose details you have' }),
+        el('div', { class: 'card' }, [el('p', { class: 'small', text: 'Copy the rows from your spreadsheet (or your old app\'s export) and paste them here with the headings. Name, sex, age, height and weight are needed. Goal weight, goal, days a week, gym or home and allergies are used if they are there.' }),
+          ta, el('div', { class: 'row', style: 'margin-top:10px' }, [check, el('a', { class: 'link', href: 'data:text/csv;charset=utf-8,' + encodeURIComponent(tpl), download: 'clients-template.csv', text: 'Download a blank template' })]), out]),
+        el('h2', { text: '2 · Everyone else: send one link' }),
+        el('div', { class: 'card' }, [el('p', { class: 'small', text: 'Send this to all your other clients at once. Each one fills in a 2 minute form and their plan builds itself, ready for you in step 3.' }),
+          el('div', { class: 'linkbox', style: 'white-space:pre-wrap', text: msgText }), el('div', { style: 'height:8px' }), copyMsg]),
+        el('h2', { text: '3 · Publish and send the app links' }),
+        el('div', { class: 'card' }, [ready])]);
+    }).catch(function () { show(banner('bad', 'Could not load. Check your connection and try again.')); });
+  }
+
+  function templatesView() {
+    setHeader('templates'); show(busy('Loading'));
+    S.templates = null;
+    Promise.all([templates(), options()]).then(function (r) {
+      var list = r[0], O = r[1];
+      var nodes = [el('h1', { text: 'My templates' }), el('p', { class: 'mute', text: 'Plans you built your way and saved. Start any new client from one.' })];
+      if (!list.length) nodes.push(el('div', { class: 'card' }, [el('p', { text: 'No templates yet.' }), el('p', { class: 'mute', text: 'Build a plan, change it how you like, then tap "Save this plan as one of my templates" on the review screen.' })]));
+      else nodes.push(el('div', { class: 'card' }, list.map(function (t) {
+        var tr = O.training[t.form.training], mn = O.menus[t.form.menu];
+        return el('div', { class: 'meal' }, [el('div', { class: 'row' }, [el('span', { class: 'grow' }, [el('strong', { text: t.name }),
+          el('div', { class: 'mute small', text: [(tr ? tr.label : t.form.training), (mn ? mn.label : t.form.menu), t.form.mealsPerDay + ' meals', t.form.weeks + ' weeks'].join(' · ') + (t.trainingEdited ? ' · your training changes' : '') + (t.mealsEdited ? ' · your meal changes' : '') })]),
+          el('button', { type: 'button', class: 'mini', text: 'Use', onclick: function () { formView(null, null, null, t); } }),
+          el('button', { type: 'button', class: 'danger mini', text: 'Delete', onclick: function () { if (confirm('Delete the template "' + t.name + '"? Plans already made from it are not affected.')) call('cpTemplateDelete', { id: t.id }).then(templatesView); } })])]);
+      })));
+      show(nodes);
+    }).catch(oops);
+  }
+
+  // ── your look: brand name, colour, logo ──────────────────────────────────
+  var SWATCHES = ['#16161a', '#e8542e', '#d4af37', '#16a34a', '#0d9488', '#2563eb', '#7c3aed', '#db2777', '#dc2626'];
+  function resizeLogo(file, bg) {
+    return new Promise(function (resolve, reject) {
+      if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 8e6) { reject(new Error('Use a PNG or JPG under 8 MB.')); return; }
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('That file could not be read as an image.')); };
+      img.onload = function () {
+        var out = {};
+        [512, 192, 180, 32].forEach(function (n) {
+          var c = document.createElement('canvas'); c.width = c.height = n; var g = c.getContext('2d');
+          g.fillStyle = bg; g.fillRect(0, 0, n, n);
+          var pad = n * 0.1, k = Math.min((n - 2 * pad) / img.width, (n - 2 * pad) / img.height), w = img.width * k, h = img.height * k;
+          g.imageSmoothingQuality = 'high'; g.drawImage(img, (n - w) / 2, (n - h) / 2, w, h);
+          out[n] = c.toDataURL('image/png').split(',')[1];
+        });
+        URL.revokeObjectURL(url); resolve(out);
+      };
+      img.src = url;
+    });
+  }
+  function lookView() {
+    setHeader('look');
+    var st = { brand: S.coach.brand, accent: S.coach.accent || '#16161a', logo: undefined, logo180: S.coach.logo, bg: '#ffffff', file: null };
+    var brand = el('input', { type: 'text', value: st.brand, maxlength: 40 });
+    var custom = el('input', { type: 'color', value: st.accent, 'aria-label': 'Custom colour' }); custom.style.padding = '2px'; custom.style.width = '64px';
+    var sw = el('div', { class: 'swatches', role: 'group', 'aria-label': 'Colour' });
+    var preview = el('div'), msg = el('div');
+    function drawSw() {
+      sw.replaceChildren.apply(sw, SWATCHES.map(function (c) {
+        var b = el('button', { type: 'button', 'aria-pressed': String(st.accent.toLowerCase() === c), 'aria-label': 'Colour ' + c, onclick: function () { st.accent = c; custom.value = c; drawSw(); drawPreview(); } });
+        b.style.background = c; return b;
+      }));
+    }
+    function drawPreview() {
+      var on = lum(st.accent) > 0.3 ? '#16161a' : '#fff';
+      var btn = el('div', { class: 'pb', text: 'Log today\'s weight' }); btn.style.background = st.accent; btn.style.color = on;
+      var fill = el('i'); fill.style.background = st.accent;
+      preview.replaceChildren(el('div', { class: 'phone', 'aria-label': 'Preview of your client app' }, [
+        el('div', { class: 'top' }, [st.logo180 ? el('img', { src: 'data:image/png;base64,' + st.logo180, alt: '' }) : null, el('span', { text: brand.value || 'Your brand' })]),
+        el('div', { class: 'body' }, [el('div', { class: 'pc' }, [el('strong', { text: 'Today' }), el('div', { class: 'mute', text: 'Push · 6 exercises' }), el('div', { style: 'height:8px' }), el('div', { class: 'bar2' }, fill)]),
+          el('div', { class: 'pc' }, [el('strong', { text: 'Chicken Rice Bowl' }), el('div', { class: 'mute', text: '595 kcal · 55 g protein' })]), btn])]),
+        el('p', { class: 'mute small', style: 'text-align:center;margin-top:10px', text: 'A rough preview. In the app, your colour is shaded a little where needed so text stays easy to read.' }));
+    }
+    brand.addEventListener('input', drawPreview);
+    custom.addEventListener('input', function () { st.accent = custom.value; drawSw(); drawPreview(); });
+    var file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp' });
+    var bgSel = el('select', { 'aria-label': 'Logo background' }, [['#ffffff', 'White background'], ['#16161a', 'Black background'], ['accent', 'My colour as background']].map(function (x) { return el('option', { value: x[0], text: x[1] }); }));
+    function loadLogo() {
+      if (!st.file) return;
+      resizeLogo(st.file, bgSel.value === 'accent' ? st.accent : bgSel.value).then(function (o) { st.logo = o; st.logo180 = o[180]; msg.replaceChildren(); drawPreview(); })
+        .catch(function (e) { msg.replaceChildren(banner('bad', e.message)); });
+    }
+    file.addEventListener('change', function () { st.file = file.files[0] || null; loadLogo(); });
+    bgSel.addEventListener('change', loadLogo);
+    var save = el('button', { type: 'button', text: 'Save my look' });
+    var after = el('div');
+    save.addEventListener('click', function () {
+      msg.replaceChildren(); after.replaceChildren();
+      if (!brand.value.trim()) { msg.appendChild(banner('bad', 'Give your brand a name.')); return; }
+      save.disabled = true;
+      var body = { brand: brand.value.trim(), accent: st.accent };
+      if (st.logo !== undefined) body.logo = st.logo;
+      call('cpSettingsSave', body).then(function (r) {
+        save.disabled = false;
+        if (!r.ok) { msg.appendChild(banner('bad', r.detail || (r.error === 'bad_brand' ? 'Use plain letters and numbers in the brand name.' : say(r)))); return; }
+        S.coach = r.coach; setHeader('look');
+        var apply = el('button', { type: 'button', class: 'ghost', text: 'Apply to all my current clients' });
+        apply.addEventListener('click', function () {
+          apply.disabled = true;
+          call('cpRebrandAll').then(function (x) { after.replaceChildren(banner('good', x.ok ? (x.queued ? x.queued + (x.queued === 1 ? ' client app is' : ' client apps are') + ' being updated. It takes a few minutes.' : 'Nothing to update: no client has a live plan yet.') : say(x))); });
+        });
+        after.replaceChildren(banner('good', 'Saved. Every new plan uses this look.'), el('p', { class: 'mute small', text: 'Clients you already have keep their current look until their app is updated.' }), apply);
+      }).catch(oops);
+    });
+    drawSw(); drawPreview();
+    show([el('h1', { text: 'Your look' }), el('p', { class: 'mute', text: 'This is what your clients see: your name, your colour and your logo.' }),
+      el('div', { class: 'two' }, [el('div', { class: 'card' }, [msg, field('Brand name', brand, 'shown at the top of the app'), el('div', { style: 'height:16px' }),
+        el('label', { text: 'Colour' }), sw, el('div', { class: 'row', style: 'margin-top:10px' }, [custom, el('span', { class: 'mute small', text: 'or pick any colour' })]), el('div', { style: 'height:16px' }),
+        el('label', null, ['Logo', el('span', { class: 'hint', text: '  PNG or JPG. It also becomes the app icon on their phone.' })]), file, el('div', { style: 'height:8px' }), bgSel,
+        S.coach.logo ? el('button', { type: 'button', class: 'link', text: 'Remove my logo', onclick: function () { st.logo = null; st.logo180 = null; st.file = null; file.value = ''; drawPreview(); } }) : null,
+        el('div', { style: 'height:18px' }), save, el('div', { style: 'height:12px' }), after]), preview])]);
+  }
+
+  // ── home: clients + plans in progress ────────────────────────────────────
+  var STATUS = { queued: ['Building', 'warn'], building: ['Building', 'warn'], built: ['Ready to review', 'good'], failed: ['Needs a change', 'bad'], publishing: ['Going live', 'warn'], live: ['Live', 'good'] };
+  function pill(status) { var s = STATUS[status] || [status, '']; return el('span', { class: 'pill ' + s[1], text: s[0] }); }
+  // The client form: the coach sends a link, the client fills in their own details, the plan form arrives filled in.
+  function intakeToForm(a) {
+    var f = { firstName: a.firstName, lastName: a.lastName, sex: a.sex, age: a.age, heightCm: a.heightCm, weightKg: a.weightKg, goal: a.goal, activity: a.activity,
+              training: a.where === 'home' ? 'home5' : (a.days <= 3 ? 'gym3_full_body' : a.days === 4 ? 'gym4_upper_lower' : 'gym5_ppl_ul'), allergies: a.allergies || [] };
+    if (a.goalWeightKg) f.goalWeightKg = a.goalWeightKg;
+    if (a.mealsPerDay) f.mealsPerDay = a.mealsPerDay;
+    return f;
+  }
+  function drawForms(box) {
+    call('cpIntakes').then(function (r) {
+      if (!r.ok) return;
+      var out = el('div');
+      var linkBox = el('div', { style: 'margin-bottom:14px' });
+      function drawLink() {
+        call('cpIntakeLink', {}).then(function (x) {
+          if (!x.ok || !x.link) return;
+          var copy = el('button', { text: 'Copy link', onclick: function () { navigator.clipboard.writeText(x.link).then(function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy link'; }, 1500); }); } });
+          linkBox.replaceChildren(el('strong', { text: 'Your sign-up link' }),
+            el('p', { class: 'mute small', style: 'margin:4px 0 8px', text: 'One link for every new client. Put it in your bio or send it to anyone. They fill in their details, and their plan is built and waiting here for you to review. Nothing reaches them until you publish.' }),
+            el('div', { class: 'linkbox', text: x.link }),
+            el('div', { class: 'row', style: 'margin-top:8px' }, [copy, el('button', { class: 'link', text: 'Make a new link', onclick: function () {
+              if (!confirm('Make a new link? The old one stops working everywhere you have posted it.')) return;
+              call('cpIntakeLink', { reset: true }).then(drawLink);
+            } })]));
+        }).catch(function () {});
+      }
+      drawLink();
+      var sendBtn = el('button', { class: 'ghost', text: 'Send a one-time form instead', onclick: function () {
+        sendBtn.disabled = true;
+        call('cpIntakeCreate', {}).then(function (x) {
+          sendBtn.disabled = false;
+          out.replaceChildren(x.ok ? el('div', { style: 'margin-top:12px' }, [el('p', { class: 'mute small', text: 'This link works once and lasts ' + x.expiresInDays + ' days. Use it when you want a form for one person only.' }),
+            el('div', { class: 'linkbox', text: x.link }), el('button', { text: 'Copy link', onclick: function (e) { navigator.clipboard.writeText(x.link).then(function () { e.target.textContent = 'Copied'; }); } })]) : banner('bad', say(x)));
+        }).catch(function () { sendBtn.disabled = false; });
+      } });
+      var back = r.forms.filter(function (f) { return f.status === 'submitted'; }), waiting = r.forms.filter(function (f) { return f.status === 'open'; });
+      var remove = function (f, what) { return el('button', { class: 'link', text: 'Remove', 'aria-label': 'Remove ' + what, onclick: function () {
+        if (!confirm(f.status === 'submitted' ? 'Remove this form and the answers in it?' : 'Cancel this form link? It will stop working.')) return;
+        call('cpIntakeClose', { id: f.id }).then(function () { drawForms(box); });
+      } }); };
+      box.replaceChildren(el('h2', { text: 'New client forms' + (back.length ? ' · ' + back.length + ' back' : '') }), el('div', { class: 'card' }, [].concat(
+        back.map(function (f) {
+          var nm = f.answers.firstName + ' ' + f.answers.lastName;
+          return el('div', { class: 'meal' }, [el('div', { class: 'row' }, [el('span', { class: 'grow' }, [el('strong', { text: nm }), el('div', { class: 'mute small', text: 'Filled in your form ' + when(f.submittedAt) + '. Their plan did not start by itself (same name as someone you have, or you are at your client limit).' })]),
+            el('button', { text: 'Build their plan', onclick: function () { S.intake = f; formView(intakeToForm(f.answers), null); } }), remove(f, nm + '\'s form')])]);
+        }),
+        waiting.length ? [el('p', { class: 'mute small', style: 'margin:8px 0', text: waiting.length + (waiting.length === 1 ? ' form is' : ' forms are') + ' out and not filled in yet.' })].concat(waiting.map(function (f) {
+          return el('div', { class: 'row small', style: 'margin-bottom:6px' }, [el('span', { class: 'grow mute', text: 'Sent ' + when(f.createdAt) }), remove(f, 'the form sent ' + when(f.createdAt))]); })) : [],
+        [linkBox, sendBtn, out])));
+    }).catch(function () {});
+  }
+  function homeView() {
+    show(busy('Loading your clients'));
+    call('cpClients').then(function (j) {
+      if (!j.ok) { show(banner('bad', say(j))); return; }
+      S.coach = j.coach; setHeader('clients');
+      S.intake = null;
+      var nodes = [el('div', { class: 'row' }, [el('h1', { class: 'grow', text: 'Plans and forms' }), el('button', { text: 'New client', onclick: function () { formView(null, null); } })])];
+      if (j.builds.length) {
+        nodes.push(el('h2', { text: 'Plans in progress' }));
+        nodes.push(el('div', { class: 'card' }, j.builds.map(function (b) {
+          var nm = (b.summary && b.summary.name) || [b.form.firstName, b.form.lastName].filter(Boolean).join(' ');
+          return el('button', { class: 'item', onclick: function () { buildView(b.id); } }, [
+            el('span', { class: 'grow' }, [el('span', { class: 'name', text: nm }), el('div', { class: 'mute small', text: (b.isUpdate ? 'Plan update' : b.fromForm ? 'Filled in your sign-up form' : 'New client') + ' · started ' + when(b.createdAt) })]), pill(b.status)]);
+        })));
+      }
+      var formsBox = el('div');
+      nodes.push(formsBox);
+      drawForms(formsBox);
+      nodes.push(el('h2', { text: 'Change an existing client\'s plan' }));
+      nodes.push(el('div', { class: 'card' }, j.clients.length ? j.clients.map(function (c) {
+        return el('button', { class: 'item', onclick: function () { clientView(c.storageKey); } }, [
+          el('span', { class: 'grow' }, [el('span', { class: 'name', text: c.name }), el('div', { class: 'mute small', text: c.plan ? c.plan.weeks + ' weeks · ' + c.plan.training : 'No plan published yet' })]),
+          c.access === 'suspended' ? el('span', { class: 'pill bad', text: 'Paused' }) : null]);
+      }) : [el('p', { text: 'No clients yet.' }), el('p', { class: 'mute', style: 'margin:0', text: 'Tap New client, or send a client form. The plan is built for you to review.' })]));
+      nodes.push(el('p', { class: 'mute small', style: 'margin-top:14px' }, [document.createTextNode('Check-ins, weights, photos and who needs you today are on your '), el('a', { href: DASH, text: 'dashboard' }), document.createTextNode('.')]));
+      show(nodes);
+    }).catch(oops);
+  }
+
+  // ── the plan form (new client, or a new plan for an existing one) ────────
+  function formView(prev, storageKey, clientName, startTpl) {
+    if (S.coach) setHeader(storageKey ? 'clients' : 'new');
+    show(busy('Loading'));
+    Promise.all([options(), templates()]).then(function (res) {
+      var O = res[0], TPLS = res[1];
+      var v = prev || {};
+      if (startTpl) v = Object.assign({}, v, startTpl.form);
+      function sel(name, map, value) {
+        var s = el('select', { name: name });
+        Object.keys(map).forEach(function (k) { var o = el('option', { value: k, text: typeof map[k] === 'string' ? map[k] : map[k].label }); if (String(value) === k) o.selected = true; s.appendChild(o); });
+        return s;
+      }
+      function inp(name, type, value, extra) { return el('input', Object.assign({ name: name, type: type, value: value == null ? '' : value }, extra || {})); }
+      var feeds = {}; O.menus[Object.keys(O.menus)[0]].feeds.forEach(function (n) { feeds[n] = n + ' meals a day'; });
+      var weeks = {}; O.weeks.forEach(function (w) { weeks[w] = w + ' weeks'; });
+      var first = inp('firstName', 'text', v.firstName, { required: true, maxlength: 30, autocomplete: 'off' });
+      var last = inp('lastName', 'text', v.lastName, { maxlength: 30, autocomplete: 'off' });
+      if (storageKey) { first.readOnly = true; last.readOnly = true; }
+      var kcalBox = el('div', { class: 'grid full', hidden: !v.kcal });
+      var ownToggle = el('input', { type: 'checkbox' }); ownToggle.checked = !!v.kcal;
+      var weeksSel = sel('weeks', weeks, v.weeks || 12);
+      function drawKcal() {
+        kcalBox.replaceChildren(); var n = Number(weeksSel.value) / 4;
+        for (var i = 0; i < n; i++) kcalBox.appendChild(field('Calories, weeks ' + (i * 4 + 1) + '-' + (i * 4 + 4), inp('kcal' + i, 'number', v.kcal && v.kcal[i], { min: O.kcal[0], max: O.kcal[1], step: 50, inputmode: 'numeric' })));
+        kcalBox.appendChild(field('Protein per day', inp('proteinG', 'number', v.proteinG, { min: 60, max: 320, step: 5, inputmode: 'numeric' }), 'grams, optional'));
+      }
+      drawKcal(); weeksSel.addEventListener('change', drawKcal);
+      ownToggle.addEventListener('change', function () { kcalBox.hidden = !ownToggle.checked; });
+      var allergy = el('div', { class: 'checks' }, O.allergies.map(function (a) {
+        var c = el('input', { type: 'checkbox', name: 'allergy', value: a }); c.checked = (v.allergies || []).indexOf(a) >= 0;
+        return el('label', null, [c, a.replace('_', ' ')]);
+      }));
+      var msg = el('div'); var btn = el('button', { type: 'submit', text: 'Build the plan' });
+      var form = el('form', { class: 'card', novalidate: true, onsubmit: function (e) {
+        e.preventDefault(); msg.replaceChildren();
+        var f = new FormData(form), out = {};
+        ['firstName', 'lastName', 'sex', 'goal', 'activity', 'training', 'menu', 'startDate'].forEach(function (k) { var x = String(f.get(k) || '').trim(); if (x) out[k] = x; });
+        ['age', 'heightCm', 'weightKg', 'goalWeightKg', 'mealsPerDay', 'weeks'].forEach(function (k) { var x = String(f.get(k) || '').trim(); if (x) out[k] = Number(x); });
+        out.allergies = f.getAll('allergy');
+        var missing = ['firstName', 'age', 'heightCm', 'weightKg'].filter(function (k) { return out[k] === undefined || out[k] === ''; });
+        if (missing.length) { msg.appendChild(banner('bad', 'Fill in name, age, height and weight.')); return; }
+        if (ownToggle.checked) {
+          var ks = []; for (var i = 0; i < out.weeks / 4; i++) ks.push(Number(f.get('kcal' + i)));
+          if (ks.some(function (k) { return !k; })) { msg.appendChild(banner('bad', 'Enter calories for every phase, or untick "Set my own calories".')); return; }
+          out.kcal = ks; if (f.get('proteinG')) out.proteinG = Number(f.get('proteinG'));
+        }
+        if (v.edits) {                      // hand edits only make sense on the same training plan, menu, meal count and length
+          var same = ['training', 'menu', 'mealsPerDay', 'weeks'].every(function (k) { return String(out[k]) === String(v[k]); });
+          if (same) out.edits = v.edits;
+          else if (!confirm('Changing the training plan, food, meals a day or length starts a fresh plan, so your hand edits will be dropped. Continue?')) return;
+        }
+        btn.disabled = true;
+        call('cpBuildCreate', Object.assign({ form: out }, storageKey ? { storageKey: storageKey } : {}, !storageKey && S.intake ? { intakeId: S.intake.id } : {})).then(function (j) {
+          btn.disabled = false;
+          if (!j.ok) { msg.appendChild(banner('bad', say(j))); window.scrollTo(0, 0); return; }
+          if (!storageKey) S.intake = null;
+          buildView(j.buildId);
+        }).catch(function () { btn.disabled = false; });
+      } }, [msg, el('div', { class: 'grid' }, [
+        TPLS.length ? el('div', { class: 'full' }, (function () {
+          var pick = el('select', { 'aria-label': 'Start from' }, [el('option', { value: '', text: 'A standard plan' })].concat(TPLS.map(function (t) { var o = el('option', { value: t.id, text: 'My template: ' + t.name }); if (startTpl && startTpl.id === t.id) o.selected = true; return o; })));
+          pick.addEventListener('change', function () {
+            var t = TPLS.filter(function (x) { return x.id === pick.value; })[0] || null, keep = {};
+            new FormData(form).forEach(function (val, k) { if (k !== 'allergy' && val !== '') keep[k] = val; });
+            keep.allergies = new FormData(form).getAll('allergy'); delete keep.edits;
+            formView(keep, storageKey, clientName, t);
+          });
+          return field('Start from', pick);
+        })()) : null,
+        field('First name', first), field('Last name', last),
+        field('Sex', sel('sex', { male: 'Male', female: 'Female' }, v.sex || 'male')), field('Age', inp('age', 'number', v.age, { min: 18, max: 80, inputmode: 'numeric' }), 'adults only'),
+        field('Height', inp('heightCm', 'number', v.heightCm, { min: 130, max: 220, inputmode: 'decimal' }), 'cm'), field('Weight now', inp('weightKg', 'number', v.weightKg, { min: 35, max: 250, step: 0.1, inputmode: 'decimal' }), 'kg'),
+        field('Goal', sel('goal', O.goals, v.goal || 'lose_fat')), field('Goal weight', inp('goalWeightKg', 'number', v.goalWeightKg, { min: 35, max: 250, step: 0.1, inputmode: 'decimal' }), 'kg, optional'),
+        el('div', { class: 'full' }, field('Daily activity', sel('activity', O.activity, v.activity || 'moderate'))),
+        el('div', { class: 'full' }, field('Training', sel('training', O.training, v.training || 'gym5_ppl_ul'))),
+        field('Food', sel('menu', O.menus, v.menu || Object.keys(O.menus)[0])), field('Meals', sel('mealsPerDay', feeds, v.mealsPerDay || 4)),
+        field('Length', weeksSel), field('Start date', inp('startDate', 'date', v.startDate), 'optional'),
+        el('div', { class: 'full' }, [el('label', { text: 'Allergies' }), allergy]),
+        el('div', { class: 'full' }, el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:500' }, [ownToggle, 'Set my own calories', el('span', { class: 'hint', text: '(otherwise worked out for you)' })])),
+        kcalBox]), el('div', { style: 'height:16px' }), el('div', { class: 'row' }, [btn, el('button', { type: 'button', class: 'ghost', text: 'Cancel', onclick: function () { storageKey ? clientView(storageKey) : homeView(); } })])]);
+      ownToggle.style.width = 'auto'; ownToggle.style.minHeight = '0';
+      // an allergy the chosen food contains: move to a menu that is free of it, and say so
+      var menuSel = form.querySelector('select[name=menu]'), menuNote = el('div', { class: 'hint', style: 'margin-top:6px' });
+      menuSel.parentNode.appendChild(menuNote);
+      function fitMenu() {
+        var picked = Array.prototype.map.call(form.querySelectorAll('input[name=allergy]:checked'), function (c) { return c.value; });
+        var clash = function (k) { return (O.menus[k].contains || []).filter(function (x) { return picked.indexOf(x) >= 0; }); };
+        menuNote.textContent = '';
+        if (!clash(menuSel.value).length) return;
+        var safe = Object.keys(O.menus).filter(function (k) { return !clash(k).length; })[0];
+        if (safe) { menuSel.value = safe; menuNote.textContent = 'Changed to ' + O.menus[safe].label + ' because of the allergies ticked.'; }
+        else menuNote.textContent = 'No menu is free of ' + clash(menuSel.value).join(', ').replace(/_/g, ' ') + ' yet.';
+      }
+      allergy.addEventListener('change', fitMenu); menuSel.addEventListener('change', fitMenu); fitMenu();
+      var IN = !storageKey && S.intake ? S.intake : null, ia = IN ? IN.answers : null;
+      var intakeCard = ia ? el('div', { class: 'card', style: 'margin-bottom:14px' }, [el('h3', { text: 'From ' + ia.firstName + '\'s form' }),
+        el('p', { class: 'small', text: 'Wants to train ' + ia.days + ' days a week ' + (ia.where === 'home' ? 'at home' : 'at a gym') + '.' + (ia.phone ? ' Mobile ' + ia.phone + '.' : '') }),
+        ia.health ? el('p', { class: 'small', text: 'Injuries or health: ' + ia.health }) : null, ia.foods ? el('p', { class: 'small', text: 'Will not eat: ' + ia.foods }) : null,
+        ia.notes ? el('p', { class: 'small', text: 'Also: ' + ia.notes }) : null,
+        el('p', { class: 'mute small', style: 'margin:0', text: 'Check the details below, then build. What they wrote here is saved to your notes on this client.' })]) : null;
+      show([el('h1', { text: storageKey ? 'New plan for ' + (clientName || v.firstName) : 'New client' }), intakeCard,
+        el('p', { class: 'mute', text: 'Fill this in and the plan is built in under a minute. Nothing reaches the client until you publish it.' }), form]);
+    });
+  }
+
+  // ── plan preview + hand editor ────────────────────────────────────────────
+  // ctx (optional) turns editing on: { build, draft: {training, meals}, onChange }. Edits are kept in ctx.draft until the
+  // coach rebuilds the preview; the server and the plan engine validate everything again.
+  function library() {
+    if (S.library) return Promise.resolve(S.library);
+    return Promise.all([fetch('library.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+                        call('cpLibrary').catch(function () { return {}; })]).then(function (res) {
+      var l = res[0], mine = res[1] && res[1].ok ? res[1] : { foods: [], meals: [] };
+      l.byId = {}; l.byName = {}; l.foods.forEach(function (f) { l.byId[f.id] = f; l.byName[f.name.toLowerCase()] = f; });
+      l.meals = mine.meals || [];
+      (mine.foods || []).forEach(function (f) { addOwnFood(l, f); });
+      S.library = l; return l;
+    });
+  }
+  // one of the coach's own foods, in the shape the shared food list uses (macros per 1 g, or per one item)
+  function addOwnFood(l, f) {
+    var per = f.unit === 'g' ? 0.01 : 1, name = f.name + ' (yours)';
+    var row = { id: f.id, name: name, unit: f.unit, p: f.p * per, c: f.c * per, f: f.f * per, allergens: f.allergens || [], halal: !!f.halal, whole: false, mine: true, raw: f };
+    l.foods = l.foods.filter(function (x) { return x.id !== f.id; }); l.foods.push(row);
+    l.byId[f.id] = row; l.byName[name.toLowerCase()] = row;
+    var dl = document.getElementById('foodlist'); if (dl && !Array.prototype.some.call(dl.options, function (o) { return o.value === name; })) dl.appendChild(el('option', { value: name }));
+    return row;
+  }
+  // the small form for adding a food of the coach's own
+  function ownFoodForm(lib, onAdded) {
+    var name = el('input', { type: 'text', maxlength: 60, placeholder: 'e.g. Homemade turkey meatballs', 'aria-label': 'Food name' });
+    var unit = el('select', { 'aria-label': 'Measured in' }, [el('option', { value: 'g', text: 'Per 100 g' }), el('option', { value: 'unit', text: 'Per one (each)' })]);
+    var n = function (label) { return el('input', { type: 'number', min: 0, max: 300, step: '0.1', inputmode: 'decimal', placeholder: label, 'aria-label': label }); };
+    var p = n('Protein'), c = n('Carbs'), f = n('Fat'), kcal = el('span', { class: 'mute small' });
+    var tags = el('div', { class: 'checks' }, ['egg', 'fish', 'gluten', 'peanut', 'sesame', 'shellfish', 'soy', 'tree_nut', 'dairy'].map(function (a) {
+      var cb = el('input', { type: 'checkbox', value: a }); return el('label', null, [cb, a.replace('_', ' ')]); }));
+    var halal = el('input', { type: 'checkbox' }); halal.style.width = 'auto'; halal.style.minHeight = '0';
+    var msg = el('div');
+    function calc() { var k = 4 * (Number(p.value) || 0) + 4 * (Number(c.value) || 0) + 9 * (Number(f.value) || 0); kcal.textContent = k ? Math.round(k) + ' kcal ' + (unit.value === 'g' ? 'per 100 g' : 'each') : ''; }
+    [p, c, f, unit].forEach(function (x) { x.addEventListener('input', calc); });
+    var save = el('button', { type: 'button', text: 'Add to my foods', onclick: function () {
+      msg.replaceChildren(); save.disabled = true;
+      call('cpFoodSave', { food: { name: name.value, unit: unit.value, p: Number(p.value) || 0, c: Number(c.value) || 0, f: Number(f.value) || 0,
+        allergens: Array.prototype.map.call(tags.querySelectorAll('input:checked'), function (x) { return x.value; }), halal: halal.checked } }).then(function (j) {
+        save.disabled = false;
+        if (!j.ok) { msg.appendChild(banner('bad', say(j))); return; }
+        var row = addOwnFood(lib, j.food); onAdded(row);
+      }).catch(function () { save.disabled = false; });
+    } });
+    var mineList = el('div');
+    function drawMine() {
+      var own = lib.foods.filter(function (x) { return x.mine; });
+      mineList.replaceChildren(); if (own.length) mineList.appendChild(el('p', { class: 'mute small', style: 'margin:10px 0 4px', text: 'Your foods so far' }));
+      own.forEach(function (x) {
+        mineList.appendChild(el('div', { class: 'row small', style: 'margin-bottom:4px' }, [el('span', { class: 'grow', text: x.raw.name + ' · ' + x.raw.p + ' P / ' + x.raw.c + ' C / ' + x.raw.f + ' F ' + (x.unit === 'g' ? 'per 100 g' : 'each') }),
+          el('button', { type: 'button', class: 'link', text: 'Remove', 'aria-label': 'Remove ' + x.raw.name, onclick: function () {
+            if (!confirm('Remove this food from your list? Plans that already use it keep it.')) return;
+            call('cpFoodDelete', { id: x.id }).then(function (j) { if (j.ok) { lib.foods = lib.foods.filter(function (y) { return y.id !== x.id; }); delete lib.byName[x.name.toLowerCase()]; drawMine(); } });
+          } })]));
+      });
+    }
+    drawMine();
+    return el('div', { class: 'card', style: 'margin-top:10px;background:var(--soft,#f5f5f7)' }, [el('h3', { text: 'Add your own food' }),
+      el('p', { class: 'mute small', text: 'Take the numbers from the label. It joins your food list for every client.' }),
+      field('Name', name), el('div', { style: 'height:8px' }), field('Measured', unit), el('div', { style: 'height:8px' }),
+      el('label', { text: 'Grams of protein, carbs and fat' }), el('div', { style: 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px' }, [p, c, f]), kcal, el('div', { style: 'height:8px' }),
+      el('label', { text: 'Contains (tick every allergen in it)' }), tags,
+      el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:500;margin-top:10px' }, [halal, 'Halal, or has no meat in it']), msg,
+      el('div', { class: 'row', style: 'margin-top:10px' }, [save]), mineList]);
+  }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  // "Changed" means: different from the plan as it is built right now
+  function dayKey(d) { return d ? d.day + '|' + d.exercises.map(function (x) { return [x.name, Number(x.sets), String(x.reps).replace('–', '-'), Number(x.rest_seconds), x.rir == null ? 1 : Number(x.rir), x.method || '', x.note || ''].join(','); }).join(';') : ''; }
+  // how a set is done: the same list the plan engine knows (engine.py METHODS)
+  var METHODS = [['drop_set', 'Drop set on the last set'], ['rest_pause', 'Rest-pause on the last set'], ['superset', 'Superset with the next exercise'], ['to_failure', 'Last set to failure'],
+                 ['amrap', 'Last set max reps'], ['myo_reps', 'Myo-reps'], ['slow_lower', '3 second lowering'], ['pause', '1 second pause each rep']];
+  function methodTag(x) { var m = METHODS.filter(function (y) { return y[0] === x.method; })[0]; return m ? ' · ' + m[1].toLowerCase() : ''; }
+  function mealKey(items) { return items.map(function (i) { return i.id + ':' + Number(i.qty); }).sort().join(';'); }
+  function macros(items, lib) {
+    var t = { p: 0, c: 0, f: 0 };
+    items.forEach(function (it) { var f = lib.byId[it.id]; if (f) { t.p += f.p * it.qty; t.c += f.c * it.qty; t.f += f.f * it.qty; } });
+    t.kcal = 4 * t.p + 4 * t.c + 9 * t.f; return t;
+  }
+  function amount(it, lib) { var f = lib.byId[it.id] || {}; return (f.unit === 'unit' ? it.qty + ' x ' : it.qty + (f.unit || 'g') + ' ') + (f.name || it.id); }
+  var REST = [[30, '30 sec'], [45, '45 sec'], [60, '1 min'], [75, '75 sec'], [90, '90 sec'], [120, '2 min'], [150, '2.5 min'], [180, '3 min'], [240, '4 min'], [300, '5 min']];
+
+  function trainingEditor(ctx, phase, dayIdx, done) {
+    var E0 = ctx.build.plan.editable.training, phases = Object.keys(E0);
+    var days = clone(ctx.draft.training[phase] || E0[phase]), isNew = dayIdx >= days.length;
+    var day = isNew ? { day: '', exercises: [{}] } : days[dayIdx];
+    var listId = 'exlist'; var rows = el('div', { class: 'edit' });
+    var name = el('input', { type: 'text', value: day.day, maxlength: 40, 'aria-label': 'Day name' });
+    function row(x) {
+      var n = el('input', { type: 'text', value: x.name || '', list: listId, placeholder: 'Exercise', maxlength: 60, 'aria-label': 'Exercise' });
+      var sets = el('input', { type: 'number', value: x.sets || 3, min: 1, max: 10, inputmode: 'numeric', 'aria-label': 'Sets' });
+      var reps = el('input', { type: 'text', value: x.reps || '8-12', maxlength: 14, 'aria-label': 'Reps' });
+      var rest = el('select', { class: 'rest', 'aria-label': 'Rest' }, REST.map(function (r) { var o = el('option', { value: r[0], text: r[1] }); if (Number(x.rest_seconds || 90) === r[0]) o.selected = true; return o; }));
+      if (!REST.some(function (r) { return r[0] === Number(x.rest_seconds || 90); })) rest.appendChild(el('option', { value: x.rest_seconds, text: x.rest_seconds + ' sec', selected: true }));
+      var rirNow = x.rir == null ? 1 : Number(x.rir);
+      var rir = el('select', { 'aria-label': 'Effort' }, [0, 1, 2, 3, 4, 5].map(function (v) { var o = el('option', { value: v, text: v === 0 ? 'To the limit (0 in reserve)' : v + ' rep' + (v === 1 ? '' : 's') + ' in reserve' }); if (v === rirNow) o.selected = true; return o; }));
+      var method = el('select', { 'aria-label': 'How the sets are done' }, [['', 'Straight sets']].concat(METHODS).map(function (m) { var o = el('option', { value: m[0], text: m[1] }); if ((x.method || '') === m[0]) o.selected = true; return o; }));
+      var note = el('input', { type: 'text', value: x.note || '', maxlength: 120, placeholder: 'Your instruction for this exercise (optional)', 'aria-label': 'Your instruction' });
+      var r = el('div', { class: 'ex' }, [
+        el('div', { class: 'erow' }, [n, sets, reps, el('button', { type: 'button', class: 'x', 'aria-label': 'Remove exercise', text: '×', onclick: function () { r.remove(); } })]),
+        el('div', { class: 'erow2' }, [rir, rest, method, note])]);
+      r.read = function () {
+        var o = { name: n.value.trim(), sets: Number(sets.value), reps: reps.value.trim(), rir: Number(rir.value), rest_seconds: Number(rest.value) };
+        if (method.value) o.method = method.value;
+        if (note.value.trim()) o.note = note.value.trim();
+        return o;
+      };
+      return r;
+    }
+    day.exercises.forEach(function (x) { rows.appendChild(row(x)); });
+    var all = el('input', { type: 'checkbox' }); all.style.width = 'auto'; all.style.minHeight = '0';
+    var msg = el('div');
+    var box = el('div', { class: 'card changed' }, [field('Day name', name), el('div', { style: 'height:10px' }),
+      el('div', { class: 'erow ehead' }, [el('span', { text: 'Exercise' }), el('span', { text: 'Sets' }), el('span', { text: 'Reps' }), el('span')]), rows,
+      el('div', { style: 'height:8px' }), el('button', { type: 'button', class: 'mini', text: '+ Add exercise', onclick: function () { var r = row({}); rows.appendChild(r); r.querySelector('input').focus(); } }),
+      el('p', { class: 'mute small', style: 'margin:10px 0 0', text: 'Pick from the list to give the client a how-to guide. You can also type your own exercise.' }),
+      phases.length > 1 && !isNew ? el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:500;margin-top:12px' }, [all, 'Use this day in every phase']) : null,
+      isNew ? el('p', { class: 'mute small', style: 'margin:10px 0 0', text: 'A new day is added to every phase of the plan.' }) : null, msg,
+      el('div', { class: 'row', style: 'margin-top:14px' }, [el('button', { type: 'button', text: 'Done', onclick: function () {
+        var ex = Array.prototype.map.call(rows.children, function (r) { return r.read(); }).filter(function (x) { return x.name; });
+        msg.replaceChildren();
+        if (!name.value.trim() || !ex.length) { msg.appendChild(banner('bad', 'Give the day a name and at least one exercise.')); return; }
+        if (ex.some(function (x) { return !(x.sets >= 1 && x.sets <= 10) || !/^(\d{1,3}(\s?-\s?\d{1,3})?( each side| per side| sec| s)?|AMRAP)$/i.test(x.reps); })) { msg.appendChild(banner('bad', 'Sets go from 1 to 10. Write reps like 8-12, 10 or AMRAP.')); return; }
+        var edited = { day: name.value.trim(), exercises: ex };
+        if (isNew) {
+          if (days.some(function (d) { return d.day.toLowerCase() === edited.day.toLowerCase(); })) { msg.appendChild(banner('bad', 'Another day already has that name.')); return; }
+          phases.forEach(function (p) { var d = clone(ctx.draft.training[p] || E0[p]); d.push(clone(edited)); ctx.draft.training[p] = d; });
+          ctx.onChange(); done(); return;
+        }
+        (all.checked ? phases : [phase]).forEach(function (p) { var d = clone(ctx.draft.training[p] || E0[p]); if (d[dayIdx]) { d[dayIdx] = clone(edited); ctx.draft.training[p] = d; } });
+        if (!all.checked) phases.forEach(function (p) { if (p !== phase) { var d = clone(ctx.draft.training[p] || E0[p]); if (d[dayIdx] && d[dayIdx].day !== edited.day) { d[dayIdx].day = edited.day; ctx.draft.training[p] = d; } } });
+        ctx.onChange(); done();
+      } }), el('button', { type: 'button', class: 'ghost', text: 'Cancel', onclick: done }),
+        !isNew && days.length > 2 ? el('button', { type: 'button', class: 'danger', text: 'Remove this day', onclick: function () {
+          if (!confirm('Remove "' + day.day + '" from every phase of the plan?')) return;
+          phases.forEach(function (p) { var d = clone(ctx.draft.training[p] || E0[p]); d.splice(dayIdx, 1); ctx.draft.training[p] = d; });
+          ctx.onChange(); done();
+        } }) : null])]);
+    return library().then(function (lib) {
+      if (!document.getElementById(listId)) document.body.appendChild(el('datalist', { id: listId }, lib.exercises.map(function (n) { return el('option', { value: n }); })));
+      return box;
+    });
+  }
+
+  function mealEditor(ctx, phase, dishName, dayMeals, target, done) {
+    return library().then(function (lib) {
+      var E0 = ctx.build.plan.editable.meals, phases = Object.keys(E0), base = E0[phase][dishName], key = base.key;
+      var cur = (ctx.draft.meals[phase] || {})[key] || { name: dishName, items: clone(base.items), steps: clone(base.steps || []) };
+      var listId = 'foodlist';
+      if (!document.getElementById(listId)) document.body.appendChild(el('datalist', { id: listId }, lib.foods.map(function (f) { return el('option', { value: f.name }); })));
+      var name = el('input', { type: 'text', value: cur.name, maxlength: 50, 'aria-label': 'Meal name' });
+      var rows = el('div', { class: 'edit' }), totals = el('p', { class: 'small', style: 'margin:10px 0 0' });
+      function read() { return Array.prototype.map.call(rows.children, function (r) { return r.read(); }).filter(Boolean); }
+      function sum() {
+        var mine = macros(read(), lib), other = 0, otherP = 0;
+        dayMeals.forEach(function (m) { if (m.name !== dishName) { other += m.cal; otherP += m.p; } });
+        totals.replaceChildren(el('strong', { text: 'This meal: ' + Math.round(mine.kcal) + ' kcal · ' + Math.round(mine.p) + ' g protein' }),
+          el('span', { class: 'mute', text: '   Day: ' + Math.round(mine.kcal + other).toLocaleString() + ' kcal · ' + Math.round(mine.p + otherP) + ' g protein (target ' + target.kcal.toLocaleString() + ' · ' + target.p + ' g)' }));
+      }
+      function row(it) {
+        var f0 = it ? lib.byId[it.id] : null;
+        var food = el('input', { type: 'text', value: f0 ? f0.name : '', list: listId, placeholder: 'Search a food', 'aria-label': 'Food' });
+        var qty = el('input', { type: 'number', value: it ? it.qty : '', min: 0, step: 'any', inputmode: 'decimal', 'aria-label': 'Amount' });
+        var unit = el('span', { class: 'mute small', text: f0 ? (f0.unit === 'unit' ? 'x' : f0.unit) : '' });
+        var r = el('div', { class: 'frow' }, [food, qty, unit, el('button', { type: 'button', class: 'x', 'aria-label': 'Remove food', text: '×', onclick: function () { r.remove(); sum(); } })]);
+        food.addEventListener('input', function () { var f = lib.byName[food.value.trim().toLowerCase()]; unit.textContent = f ? (f.unit === 'unit' ? 'x' : f.unit) : ''; if (f && !qty.value) qty.value = f.unit === 'unit' ? 1 : 100; sum(); });
+        qty.addEventListener('input', sum);
+        r.read = function () { var f = lib.byName[food.value.trim().toLowerCase()], q = Number(qty.value); return f && q > 0 ? { id: f.id, qty: q } : null; };
+        r.raw = function () { return food.value.trim(); };
+        return r;
+      }
+      cur.items.forEach(function (it) { rows.appendChild(row(it)); });
+      var steps = el('textarea', { 'aria-label': 'How to make it', placeholder: 'One step per line, 3 to 6 steps. Leave amounts, times and temperatures out. Leave this empty and simple steps are written for you.' });
+      steps.value = (cur.steps || []).join('\n');
+      var all = el('input', { type: 'checkbox' }); all.style.width = 'auto'; all.style.minHeight = '0';
+      var msg = el('div');
+      // the coach's own meals: drop one in, or keep this one for next time
+      var pick = el('select', { 'aria-label': 'Use one of my meals' }, [el('option', { value: '', text: lib.meals.length ? 'Use one of my meals' : 'No saved meals yet' })].concat(lib.meals.map(function (m) { return el('option', { value: m.id, text: m.name }); })));
+      pick.disabled = !lib.meals.length;
+      pick.addEventListener('change', function () {
+        var m = lib.meals.filter(function (x) { return x.id === pick.value; })[0]; if (!m) return;
+        var gone = m.items.filter(function (it) { return !lib.byId[it.id]; });
+        name.value = m.name; rows.replaceChildren(); m.items.forEach(function (it) { if (lib.byId[it.id]) rows.appendChild(row(it)); });
+        steps.value = (m.steps || []).join('\n'); sum();
+        msg.replaceChildren(gone.length ? banner('info', gone.length + ' food' + (gone.length === 1 ? '' : 's') + ' from that meal is no longer in your list and was left out.') : banner('info', 'Loaded. Check the amounts against this client\'s target below.'));
+      });
+      var ownBox = el('div');
+      var keep = el('button', { type: 'button', class: 'mini', text: 'Save to my meals', onclick: function () {
+        var items = read(); msg.replaceChildren();
+        if (!items.length || !name.value.trim()) { msg.appendChild(banner('bad', 'A meal needs a name and at least one food.')); return; }
+        call('cpMealSave', { meal: { name: name.value.trim(), items: items, steps: steps.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) } }).then(function (j) {
+          if (!j.ok) { msg.appendChild(banner('bad', say(j))); return; }
+          lib.meals = lib.meals.filter(function (x) { return x.id !== j.id; }).concat([{ id: j.id, name: name.value.trim(), items: items, steps: steps.value.split('\n').filter(Boolean) }]);
+          keep.textContent = j.replaced ? 'Updated in my meals' : 'Saved to my meals';
+        });
+      } });
+      var box = el('div', { class: 'card changed' }, [field('Meal name', name), el('div', { style: 'height:8px' }), pick, el('div', { style: 'height:10px' }),
+        el('div', { class: 'frow ehead' }, [el('span', { text: 'Food' }), el('span', { text: 'Amount' }), el('span'), el('span')]), rows,
+        el('div', { style: 'height:8px' }), el('div', { class: 'row' }, [
+          el('button', { type: 'button', class: 'mini', text: '+ Add food', onclick: function () { var r = row(null); rows.appendChild(r); r.querySelector('input').focus(); } }),
+          el('button', { type: 'button', class: 'mini', text: '+ Add my own food', onclick: function () {
+            if (ownBox.firstChild) { ownBox.replaceChildren(); return; }
+            ownBox.replaceChildren(ownFoodForm(lib, function (f) { ownBox.replaceChildren(); var r = row({ id: f.id, qty: f.unit === 'unit' ? 1 : 100 }); rows.appendChild(r); sum(); }));
+          } }), keep]), ownBox,
+        totals, el('div', { style: 'height:12px' }), el('label', { text: 'How to make it' }), steps,
+        phases.length > 1 ? el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:500;margin-top:12px' }, [all, 'Use these amounts in every phase']) : null, msg,
+        el('div', { class: 'row', style: 'margin-top:14px' }, [el('button', { type: 'button', text: 'Done', onclick: function () {
+          msg.replaceChildren();
+          var bad = Array.prototype.filter.call(rows.children, function (r) { return r.raw() && !r.read(); });
+          var items = read();
+          if (bad.length) { msg.appendChild(banner('bad', 'Pick each food from the list and give it an amount.')); return; }
+          if (!items.length || !name.value.trim()) { msg.appendChild(banner('bad', 'A meal needs a name and at least one food.')); return; }
+          if (items.some(function (it) { return lib.byId[it.id].whole && it.qty !== Math.round(it.qty); })) { msg.appendChild(banner('bad', 'Packaged items only come whole. Use 1, 2, 3 and so on.')); return; }
+          var e = { name: name.value.trim(), items: items, steps: steps.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) };
+          (all.checked ? phases : [phase]).forEach(function (p) {
+            var k = null; Object.keys(E0[p]).forEach(function (n) { if (E0[p][n].key === key) k = n; });
+            if (k) { ctx.draft.meals[p] = ctx.draft.meals[p] || {}; ctx.draft.meals[p][key] = clone(e); }
+          });
+          ctx.onChange(); done();
+        } }), el('button', { type: 'button', class: 'ghost', text: 'Cancel', onclick: done })])]);
+      sum(); return box;
+    });
+  }
+
+  function planNode(summary, plan, ctx) {
+    var box = el('div');
+    var t = el('table', null, [el('thead', null, el('tr', null, [el('th', { text: 'Weeks' }), el('th', { class: 'num', text: 'Calories' }), el('th', { class: 'num', text: 'Protein' }), el('th', { class: 'num', text: 'Carbs' }), el('th', { class: 'num', text: 'Fat' })]))]);
+    var tb = el('tbody'); (summary.targets || []).forEach(function (x) {
+      tb.appendChild(el('tr', null, [el('td', { text: (x.phase * 4 - 3) + '-' + (x.phase * 4) }), el('td', { class: 'num', text: x.kcal.toLocaleString() }), el('td', { class: 'num', text: x.p + ' g' }), el('td', { class: 'num', text: x.c + ' g' }), el('td', { class: 'num', text: x.f + ' g' })]));
+    }); t.appendChild(tb);
+    box.appendChild(el('div', { class: 'card' }, [el('div', { class: 'row' }, [el('h3', { class: 'grow', text: summary.weeks + ' weeks · ' + (summary.strategy === 'cut' ? 'fat loss' : 'muscle gain') }), summary.edited ? el('span', { class: 'pill', text: 'Edited by you' }) : null]),
+      el('p', { class: 'mute small', text: summary.training + ' · ' + summary.menu + ' · ' + summary.mealsPerDay + ' meals a day' + (summary.goalWeightKg ? ' · goal ' + summary.goalWeightKg + ' kg' : '') }), t,
+      summary.why ? el('p', { class: 'mute small', style: 'margin-top:10px', text: 'How the calories were set: ' + String(summary.why).replace(/autopilot policy v1 §A\.\d: /, '').replace(/ \(§A\.\d[^)]*\)/g, '').replace(/§A\.\d+ ?/g, '') }) : null,
+      (summary.notes || []).map(function (n) { return banner('info', n); })]));
+    if ((summary.warnings || []).length) box.appendChild(el('div', { class: 'card' }, [el('h3', { text: 'Worth a second look' }), el('p', { class: 'mute small', text: 'These come from your own changes. You can still publish.' }), summary.warnings.map(function (w) { return el('p', { class: 'small', text: '• ' + w }); })]));
+    if (!plan) return box;
+    var phases = Object.keys(plan.training || {});
+    var state = { tab: 'training', phase: phases[0], day: 0, editing: null };
+    var body = el('div');
+    var canEdit = !!(ctx && plan.editable);
+    function draw() {
+      body.replaceChildren();
+      body.appendChild(el('div', { class: 'tabs', role: 'group', 'aria-label': 'Section' }, [['training', 'Training'], ['meals', 'Meals']].map(function (x) {
+        return el('button', { type: 'button', 'aria-pressed': String(state.tab === x[0]), text: x[1], onclick: function () { state.tab = x[0]; state.day = 0; state.editing = null; draw(); } }); })));
+      body.appendChild(el('div', { class: 'tabs', role: 'group', 'aria-label': 'Weeks' }, phases.map(function (p) {
+        return el('button', { type: 'button', 'aria-pressed': String(state.phase === p), text: 'Weeks ' + (p * 4 - 3) + '-' + (p * 4), onclick: function () { state.phase = p; state.editing = null; draw(); } }); })));
+      if (state.tab === 'training') {
+        var built = plan.training[state.phase].days || [];
+        var base = canEdit ? plan.editable.training[state.phase] : null;
+        var cur = canEdit ? (ctx.draft.training[state.phase] || base) : null;
+        var count = canEdit ? cur.length : built.length;
+        var restText = function (sec) { return (REST.filter(function (r) { return r[0] === Number(sec); })[0] || [0, sec + ' sec'])[1]; };
+        for (var di = 0; di < count; di++) (function (i) {
+          if (state.editing === 't' + i) { var slot = el('div'); body.appendChild(slot); trainingEditor(ctx, state.phase, i, function () { state.editing = null; draw(); }).then(function (n) { slot.replaceWith(n); n.scrollIntoView({ block: 'nearest' }); }); return; }
+          var changed = canEdit && dayKey(cur[i]) !== dayKey(base[i]);
+          var rows = canEdit ? cur[i].exercises.map(function (x) { return { name: x.name, sets: x.sets, reps: x.reps + methodTag(x), rest: restText(x.rest_seconds) }; }) : (built[i].exercises || []);
+          var tt = el('table', null, [el('thead', null, el('tr', null, [el('th', { text: 'Exercise' }), el('th', { class: 'num', text: 'Sets' }), el('th', { class: 'num', text: 'Reps' }), el('th', { class: 'num', text: 'Rest' })]))]);
+          var b2 = el('tbody');
+          rows.forEach(function (x) { b2.appendChild(el('tr', null, [el('td', { text: x.name }), el('td', { class: 'num', text: x.sets }), el('td', { class: 'num', text: x.reps }), el('td', { class: 'num', text: x.rest || '' })])); });
+          tt.appendChild(b2);
+          body.appendChild(el('div', { class: 'card' + (changed ? ' changed' : '') }, [el('div', { class: 'row' }, [el('h3', { class: 'grow', text: canEdit ? 'Day ' + (i + 1) + ' — ' + cur[i].day : built[i].label }), changed ? el('span', { class: 'pill warn', text: base[i] ? 'Changed' : 'New' }) : null,
+            canEdit ? el('button', { type: 'button', class: 'mini', text: 'Edit', onclick: function () { state.editing = 't' + i; draw(); } }) : null]), tt]));
+        })(di);
+        if (canEdit && state.editing === 'tnew') { var ns = el('div'); body.appendChild(ns); trainingEditor(ctx, state.phase, count, function () { state.editing = null; draw(); }).then(function (n) { ns.replaceWith(n); n.scrollIntoView({ block: 'nearest' }); }); }
+        else if (canEdit && count < 6) body.appendChild(el('button', { type: 'button', class: 'ghost', text: '+ Add a training day', onclick: function () { state.editing = 'tnew'; draw(); } }));
+        if (canEdit && base.length !== count) body.appendChild(el('p', { class: 'mute small', style: 'margin-top:10px', text: 'The plan goes from ' + base.length + ' to ' + count + ' training days a week once you rebuild.' }));
+      } else {
+        var days = plan.meals[state.phase] || []; var names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        body.appendChild(el('div', { class: 'tabs', role: 'group', 'aria-label': 'Day' }, days.map(function (_, i) {
+          return el('button', { type: 'button', 'aria-pressed': String(state.day === i), text: names[i] || 'Day ' + (i + 1), onclick: function () { state.day = i; state.editing = null; draw(); } }); })));
+        var meals = days[state.day] || [];
+        var target = (summary.targets || []).filter(function (x) { return String(x.phase) === String(state.phase); })[0] || { kcal: 0, p: 0 };
+        var slot2 = el('div'); body.appendChild(slot2);
+        (canEdit ? library() : Promise.resolve(null)).then(function (lib) {
+          var shown = meals.map(function (m) {
+            var ed = canEdit && plan.editable.meals[state.phase][m.name], dr = ed && (ctx.draft.meals[state.phase] || {})[ed.key];
+            if (!dr || (dr.name === m.name && mealKey(dr.items) === mealKey(ed.items))) return { m: m, name: m.name, cal: m.cal, p: m.p, desc: m.desc, changed: false };
+            var mc = macros(dr.items, lib);
+            return { m: m, name: dr.name, cal: Math.round(mc.kcal), p: Math.round(mc.p), desc: dr.items.map(function (it) { return amount(it, lib); }).join(' + '), changed: true };
+          });
+          var tot = shown.reduce(function (a, x) { return { cal: a.cal + x.cal, p: a.p + x.p }; }, { cal: 0, p: 0 });
+          var card = el('div', { class: 'card' }, shown.map(function (x) {
+            if (state.editing === 'm' + x.m.name) { var s3 = el('div'); mealEditor(ctx, state.phase, x.m.name, shown.map(function (y) { return { name: y.m.name, cal: y.cal, p: y.p }; }), target, function () { state.editing = null; draw(); }).then(function (n) { s3.replaceWith(n); n.scrollIntoView({ block: 'nearest' }); }); return s3; }
+            return el('div', { class: 'meal' }, [el('div', { class: 'row' }, [el('span', { class: 'grow' }, [el('span', { class: 'mute small', text: x.m.time + '  ' }), el('strong', { text: x.name }), x.changed ? el('span', { class: 'pill warn', style: 'margin-left:8px', text: 'Changed' }) : null]),
+              el('span', { class: 'mute small', text: x.cal + ' kcal · ' + x.p + ' g protein' }), canEdit ? el('button', { type: 'button', class: 'mini', text: 'Edit', onclick: function () { state.editing = 'm' + x.m.name; draw(); } }) : null]),
+              el('div', { class: 'small', style: 'margin-top:4px', text: x.desc })]);
+          }).concat([el('p', { class: 'mute small right', style: 'margin:10px 0 0', text: 'Day total ' + tot.cal.toLocaleString() + ' kcal · ' + tot.p + ' g protein' + (target.kcal ? ' (target ' + target.kcal.toLocaleString() + ' · ' + target.p + ' g)' : '') })]));
+          slot2.replaceWith(card);
+        });
+      }
+    }
+    draw(); box.appendChild(body); box.redraw = draw; return box;
+  }
+
+  // ── review a build ───────────────────────────────────────────────────────
+  function buildView(id, justPublished) {
+    show(busy('Loading the plan'));
+    function load() {
+      call('cpBuildGet', { buildId: id }).then(function (j) {
+        if (!j.ok) { show(banner('bad', say(j))); return; }
+        var b = j.build, nm = (b.summary && b.summary.name) || [b.form.firstName, b.form.lastName].filter(Boolean).join(' ');
+        var back = el('button', { class: 'link', text: '‹ Plans and forms', onclick: homeView });
+        var head = el('div', { class: 'row' }, [el('h1', { class: 'grow', text: nm }), pill(b.status)]);
+        if (b.status === 'queued' || b.status === 'building') {
+          show([back, head, el('div', { class: 'card' }, [busy('Building the plan. This usually takes under a minute.'), el('p', { class: 'mute small', text: 'You can leave this page. The plan will be waiting under Plans in progress.' })])]);
+          S.timer = setTimeout(load, 3000); return;
+        }
+        if (b.status === 'failed') {
+          var reasons = (b.error && b.error.reasons) || ['The plan could not be built.'];
+          show([back, head, el('div', { class: 'card' }, [el('h3', { text: 'This plan could not be built as asked' }), reasons.map(function (r) { return el('p', { text: r }); }),
+            el('div', { class: 'row', style: 'margin-top:8px' }, [el('button', { text: 'Change and try again', onclick: function () { call('cpBuildDiscard', { buildId: id }).then(function () { formView(b.form, b.isUpdate ? b.storageKey : null, nm); }); } }),
+              el('button', { class: 'ghost', text: 'Discard', onclick: function () { call('cpBuildDiscard', { buildId: id }).then(homeView); } })])])]);
+          return;
+        }
+        var msg = el('div'); var nodes = [back, head, msg];
+        if (justPublished) {
+          nodes.push(el('div', { class: 'card' }, [el('h3', { text: justPublished.link ? 'Published. Send this link to ' + b.form.firstName : 'Published. ' + b.form.firstName + '\'s app is updating' }),
+            justPublished.link ? el('p', { class: 'mute small', text: 'This is their private link to the app. It is shown once, so copy it now. You can always make a new one from their page.' }) : el('p', { class: 'mute small', text: 'Their existing link keeps working. Nothing for you to send.' }),
+            justPublished.link ? el('div', { class: 'linkbox', text: justPublished.link }) : null,
+            justPublished.link ? el('button', { text: 'Copy link', onclick: function (e) { navigator.clipboard.writeText(justPublished.link).then(function () { e.target.textContent = 'Copied'; }); } }) : null,
+            el('p', { class: 'mute small', style: 'margin-top:10px', text: b.status === 'live' ? 'The app is live now.' : 'The app goes live in about 2 minutes.' })]));
+        }
+        if (b.status === 'built') {
+          var pub = el('button', { text: b.isUpdate ? 'Publish the new plan' : 'Publish to client' });
+          pub.addEventListener('click', function () {
+            if (document.querySelector('.bar')) { msg.replaceChildren(banner('info', 'You have changes that are not in the plan yet. Rebuild the preview first, or undo them.')); window.scrollTo(0, 0); return; }
+            pub.disabled = true; msg.replaceChildren();
+            call('cpPublish', { buildId: id }).then(function (r) { if (!r.ok) { pub.disabled = false; msg.appendChild(banner('bad', say(r))); return; } buildView(id, r); });
+          });
+          nodes.push(el('div', { class: 'card' }, [el('p', { text: 'Check the plan below. Nothing reaches ' + b.form.firstName + ' until you publish.' }),
+            el('div', { class: 'row' }, [pub, el('button', { class: 'ghost', text: 'Change something', onclick: function () { call('cpBuildDiscard', { buildId: id }).then(function () { formView(b.form, b.isUpdate ? b.storageKey : null, nm); }); } }),
+              el('button', { class: 'danger', text: 'Discard', onclick: function () { call('cpBuildDiscard', { buildId: id }).then(homeView); } })])]));
+        }
+        if (b.status === 'publishing' && b.error) nodes.push(banner('info', 'Still publishing. It will keep trying.'));
+        if (b.summary) {
+          var ctx = null, bar = el('div');
+          if (b.status === 'built' && b.plan && b.plan.editable) {
+            var start = (b.form.edits && clone(b.form.edits)) || {};
+            ctx = { build: b, draft: { training: start.training || {}, meals: start.meals || {} }, dirty: false, onChange: function () { ctx.dirty = true; drawBar(); } };
+            var drawBar = function () {
+              bar.replaceChildren();
+              if (!ctx.dirty) return;
+              var go = el('button', { type: 'button', text: 'Rebuild preview' });
+              go.addEventListener('click', function () {
+                go.disabled = true;
+                var form = Object.assign({}, b.form, { edits: ctx.draft });
+                if (ctx.update && ctx.update.title.trim()) form.update = { title: ctx.update.title.trim(), why: ctx.update.why.trim() }; else delete form.update;
+                call('cpBuildCreate', Object.assign({ form: form }, b.isUpdate ? { storageKey: b.storageKey } : {})).then(function (r) {
+                  if (!r.ok) { go.disabled = false; msg.replaceChildren(banner('bad', say(r))); window.scrollTo(0, 0); return; }
+                  call('cpBuildDiscard', { buildId: id }).then(function () { buildView(r.buildId); });
+                });
+              });
+              bar.appendChild(el('div', { class: 'bar', role: 'status' }, [el('span', { class: 'grow', text: 'Your changes are not in the plan yet.' }), go,
+                el('button', { type: 'button', class: 'ghost', text: 'Undo changes', onclick: function () { buildView(id); } })]));
+            };
+            if (b.isUpdate) {
+              ctx.update = { title: (b.form.update && b.form.update.title) || '', why: (b.form.update && b.form.update.why) || '' };
+              var ut = el('input', { type: 'text', maxlength: '70', 'aria-label': 'What changed, in a few words', placeholder: 'What changed, in a few words' }); ut.value = ctx.update.title;
+              var uw = el('textarea', { rows: '2', maxlength: '260', 'aria-label': 'Why you changed it', placeholder: 'Why you changed it, in your own words', style: 'min-height:64px;margin-top:8px' }); uw.value = ctx.update.why;
+              var touch = function () { ctx.update.title = ut.value; ctx.update.why = uw.value; ctx.onChange(); };
+              ut.addEventListener('input', touch); uw.addEventListener('input', touch);
+              nodes.push(el('div', { class: 'card' }, [el('h3', { text: 'Tell ' + b.form.firstName + ' what changed' }),
+                el('p', { class: 'mute small', text: b.form.update ? 'This note is in the plan. It shows on the Home screen of their app for 7 days.' : 'Optional. Your note shows on the Home screen of their app for 7 days after you publish.' }), ut, uw]));
+            }
+            nodes.push(el('p', { class: 'mute small', text: 'Tap Edit on any training day or meal to change it your way.' }));
+          }
+          if (b.status === 'built' || b.status === 'live') nodes.push(templateSaver(id, b));
+          nodes.push(planNode(b.summary, b.plan, ctx)); nodes.push(bar);
+        }
+        show(nodes);
+        if (b.status === 'publishing') S.timer = setTimeout(function () { call('cpBuildGet', { buildId: id }).then(function (x) { if (x.ok && x.build.status === 'live') buildView(id, justPublished); else S.timer = setTimeout(load, 5000); }); }, 5000);
+      }).catch(oops);
+    }
+    load();
+  }
+
+  // ── one client ───────────────────────────────────────────────────────────
+  // The plan's own line: from the starting weight to the plan's goal weight over the plan's length.
+  function planLine(c, summary) {
+    if (!summary || !c.startDate || !(summary.weeks > 0) || !(summary.startWeightKg > 0) || !(summary.goalWeightKg > 0)) return null;
+    var t0 = Date.parse(c.startDate); if (!isFinite(t0)) return null;
+    return { t0: t0, t1: t0 + summary.weeks * 7 * 86400000, w0: summary.startWeightKg, w1: summary.goalWeightKg };
+  }
+  function weightChart(ws, line) {
+    if (ws.length < 2) return null;
+    var W = 600, H = 120, pad = 8, lo = Math.min.apply(null, ws.map(function (w) { return w.weight_kg; })), hi = Math.max.apply(null, ws.map(function (w) { return w.weight_kg; }));
+    var t0 = Date.parse(ws[0].logged_at), t1 = Date.parse(ws[ws.length - 1].logged_at) || t0 + 1;
+    var at = function (t) { return line.w0 + (line.w1 - line.w0) * Math.min(1, Math.max(0, (t - line.t0) / (line.t1 - line.t0))); };
+    if (line) { lo = Math.min(lo, at(t0), at(t1)); hi = Math.max(hi, at(t0), at(t1)); }
+    if (hi - lo < 1) { hi += 0.5; lo -= 0.5; }
+    var pts = ws.map(function (w) { return (pad + (W - 2 * pad) * (Date.parse(w.logged_at) - t0) / Math.max(1, t1 - t0)).toFixed(1) + ',' + (pad + (H - 2 * pad) * (1 - (w.weight_kg - lo) / (hi - lo))).toFixed(1); }).join(' ');
+    var ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('class', 'chart'); svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Weight from ' + ws[0].weight_kg + ' kg to ' + ws[ws.length - 1].weight_kg + ' kg');
+    var pl = document.createElementNS(ns, 'polyline'); pl.setAttribute('points', pts); pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', '#16161a'); pl.setAttribute('stroke-width', '2.5'); pl.setAttribute('stroke-linejoin', 'round');
+    if (line) {
+      var y = function (w) { return (pad + (H - 2 * pad) * (1 - (w - lo) / (hi - lo))).toFixed(1); };
+      var ln = document.createElementNS(ns, 'line'); ln.setAttribute('x1', pad); ln.setAttribute('x2', W - pad); ln.setAttribute('y1', y(at(t0))); ln.setAttribute('y2', y(at(t1)));
+      ln.setAttribute('stroke', '#9a9aa3'); ln.setAttribute('stroke-width', '2'); ln.setAttribute('stroke-dasharray', '6 6'); svg.appendChild(ln);
+    }
+    svg.appendChild(pl); return svg;
+  }
+  function clientView(key) {
+    show(busy('Loading'));
+    call('cpClient', { storageKey: key }).then(function (j) {
+      if (!j.ok) { show(banner('bad', say(j))); return; }
+      var c = j.client, msg = el('div');
+      var nodes = [el('button', { class: 'link', text: '‹ Plans and forms', onclick: homeView }),
+        el('div', { class: 'row' }, [el('h1', { class: 'grow', text: c.name }), c.access === 'suspended' ? el('span', { class: 'pill bad', text: 'Paused' }) : null]), msg];
+      var form = j.live ? j.live.form : null;
+      nodes.push(el('div', { class: 'row', style: 'margin-bottom:12px' }, [
+        el('button', { text: 'Edit plan', disabled: !form, onclick: function (e) {
+          e.target.disabled = true;
+          var f0 = clone(form); delete f0.update;
+          call('cpBuildCreate', { form: f0, storageKey: c.storageKey }).then(function (r) { if (r.ok) buildView(r.buildId); else { e.target.disabled = false; msg.replaceChildren(banner('bad', say(r))); } });
+        } }),
+        el('button', { class: 'ghost', text: 'Start a new plan', disabled: !form, onclick: function () { formView(form, c.storageKey, c.name); } }),
+        el('button', { class: 'ghost', text: 'New app link', onclick: function () {
+          if (!confirm('Make a new link for ' + c.name + '? Their old link will stop working.')) return;
+          call('cpClientLink', { storageKey: key }).then(function (r) {
+            msg.replaceChildren(r.ok ? el('div', { class: 'card' }, [el('h3', { text: 'New link for ' + c.name }), el('div', { class: 'linkbox', text: r.link }), el('button', { text: 'Copy link', onclick: function (e) { navigator.clipboard.writeText(r.link).then(function () { e.target.textContent = 'Copied'; }); } })]) : banner('bad', say(r)));
+          });
+        } }),
+        el('button', { class: c.access === 'suspended' ? 'ghost' : 'danger', text: c.access === 'suspended' ? 'Resume access' : 'Pause access', onclick: function () {
+          var to = c.access === 'suspended' ? 'active' : 'suspended';
+          if (to === 'suspended' && !confirm('Pause ' + c.name + '\'s access to the app?')) return;
+          call('cpClientAccess', { storageKey: key, status: to }).then(function () { clientView(key); });
+        } })]));
+      var latestW = j.weights.length ? j.weights[j.weights.length - 1].weight_kg : null;
+      var endsIn = c.planEndsAt ? Math.ceil((Date.parse(c.planEndsAt) - Date.now()) / 86400000) : null;
+      if (form && endsIn !== null && endsIn <= 14) {
+        nodes.push(el('div', { class: 'card' }, [el('h3', { text: endsIn <= 0 ? 'This plan has finished' : 'This plan ends in ' + endsIn + (endsIn === 1 ? ' day' : ' days') }),
+          el('p', { class: 'mute', text: 'Build the next block from this one. It starts from ' + (latestW ? 'their latest weight, ' + latestW + ' kg' : 'their last plan') + ', and keeps your training changes.' }),
+          el('button', { text: 'Build the next block', onclick: function () {
+            var f = clone(form); if (latestW) f.weightKg = latestW; delete f.kcal; delete f.proteinG;
+            f.startDate = endsIn > 0 ? c.planEndsAt.slice(0, 10) : new Date().toISOString().slice(0, 10);
+            if (f.edits) { delete f.edits.meals; if (!f.edits.training) delete f.edits; }
+            formView(f, c.storageKey, c.name);
+          } })]));
+      }
+      var noteArea = el('textarea', { 'aria-label': 'Your notes on this client', rows: '3', maxlength: '4000', placeholder: 'Injuries, preferences, what you agreed on a call. Only you see this.', style: 'width:100%' });
+      noteArea.value = c.notes || '';
+      var noteSaved = el('span', { class: 'mute small' });
+      nodes.push(el('h2', { text: 'Your notes' }));
+      nodes.push(el('div', { class: 'card' }, [noteArea, el('div', { class: 'row', style: 'margin-top:8px' }, [
+        el('button', { class: 'ghost', text: 'Save notes', onclick: function (e) {
+          e.target.disabled = true; noteSaved.textContent = '';
+          call('cpClientNote', { storageKey: key, notes: noteArea.value }).then(function (r) { e.target.disabled = false; noteSaved.textContent = r.ok ? 'Saved' : say(r); }).catch(function () { e.target.disabled = false; noteSaved.textContent = 'Could not save. Try again.'; });
+        } }), noteSaved])]));
+      j.builds.forEach(function (b) { nodes.push(el('button', { class: 'card item', style: 'border:1px solid var(--line);border-radius:12px;padding:14px 16px', onclick: function () { buildView(b.id); } }, [el('span', { class: 'grow name', text: 'Plan update' }), pill(b.status)])); });
+      var loginBox = el('div');
+      nodes.push(el('h2', { text: 'Their login' }));
+      nodes.push(el('div', { class: 'card' }, [el('p', { text: c.hasLogin ? c.name.split(' ')[0] + ' has an email and password login.' : c.name.split(' ')[0] + ' opens the app with their private link. You can also give them an email and password login.' }),
+        el('button', { class: 'ghost', text: c.hasLogin ? 'Make a password reset link' : 'Make a login setup link', disabled: c.access === 'suspended', onclick: function () {
+          call('cpClientInvite', { storageKey: key }).then(function (r) {
+            loginBox.replaceChildren(r.ok ? el('div', null, [el('p', { class: 'mute small', style: 'margin-top:12px', text: r.purpose === 'reset' ? 'Send this to them. It works once and lasts 24 hours.' : 'Send this to them. They choose their own email and password. It works once and lasts 7 days.' }),
+              el('div', { class: 'linkbox', text: r.link }), el('button', { text: 'Copy link', onclick: function (e) { navigator.clipboard.writeText(r.link).then(function () { e.target.textContent = 'Copied'; }); } })]) : banner('bad', r.error === 'access_not_active' ? 'Resume their access first.' : say(r)));
+          });
+        } }), loginBox, c.hasLogin ? el('p', { class: 'mute small', style: 'margin:12px 0 0', text: 'They log in at ' + (LOCAL ? location.origin : 'https://drafted-app.github.io') + '/login/?c=' + S.coach.slug }) : null]));
+      nodes.push(el('h2', { text: 'Weight' }));
+      var ws = j.weights;
+      nodes.push(el('div', { class: 'card' }, ws.length ? [el('div', { class: 'row' }, [el('div', { class: 'grow' }, [el('strong', { text: ws[ws.length - 1].weight_kg + ' kg' }), el('span', { class: 'mute small', text: '  ' + when(ws[ws.length - 1].logged_at) })]),
+        el('span', { class: 'mute small', text: 'start ' + (c.startWeight || '?') + ' kg' + (c.goalWeight ? ' · goal ' + c.goalWeight + ' kg' : '') })]), weightChart(ws, planLine(c, j.live && j.live.summary)), planLine(c, j.live && j.live.summary) ? el('p', { class: 'mute small', style: 'margin:6px 0 0', text: 'Dashed line: where the plan expects them to be.' }) : null] : el('p', { class: 'mute', text: 'No weigh-ins logged yet.' })));
+      var unread = j.checkIns.filter(function (k) { return !c.reviewedThrough || k.submitted_at > c.reviewedThrough; });
+      nodes.push(el('div', { class: 'row' }, [el('h2', { class: 'grow', text: 'Check-ins' }), unread.length ? el('button', { class: 'ghost', text: unread.length === 1 ? 'Mark as read' : 'Mark ' + unread.length + ' as read', onclick: function (e) {
+        e.target.disabled = true; call('cpCheckinReviewed', { storageKey: key }).then(function () { clientView(key); }).catch(oops);
+      } }) : null]));
+      nodes.push(el('div', { class: 'card' }, j.checkIns.length ? j.checkIns.map(function (k) {
+        var isNew = unread.indexOf(k) >= 0;
+        var bits = [k.weight_kg ? Math.round(k.weight_kg * 10) / 10 + ' kg' : null, k.diet_adherence_1to10 != null ? 'food ' + k.diet_adherence_1to10 + '/10' : null, k.training_adherence_1to10 != null ? 'training ' + k.training_adherence_1to10 + '/10' : null,
+          k.energy_1to10 != null ? 'energy ' + k.energy_1to10 + '/10' : null, k.sleep_hours != null ? 'sleep ' + k.sleep_hours + ' h' : null].filter(Boolean).join(' · ');
+        return el('div', { class: 'meal' }, [el('div', { class: 'row' }, [el('strong', { class: 'grow', text: 'Week ' + (k.week_number || '?') }), isNew ? el('span', { class: 'pill good', text: 'New' }) : null, el('span', { class: 'mute small', text: when(k.submitted_at) })]), el('div', { class: 'small', text: bits }), k.notes ? el('div', { class: 'small', style: 'margin-top:4px', text: '"' + k.notes + '"' }) : null]);
+      }) : el('p', { class: 'mute', text: 'No check-ins yet.' })));
+      var photoBox = el('div', { class: 'card' }, busy('Loading photos'));
+      nodes.push(el('h2', { text: 'Progress photos' })); nodes.push(photoBox);
+      call('cpClientPhotos', { storageKey: key }).then(function (r) {
+        if (!r.ok || !r.photos.length) { photoBox.replaceChildren(el('p', { class: 'mute', text: 'No photos yet. They appear here when ' + c.name.split(' ')[0] + ' sends them with a check-in.' })); return; }
+        var groups = {}, order = [];
+        r.photos.forEach(function (p) { var k = p.start ? 'Start' : (p.week ? 'Week ' + p.week : new Date(p.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(p); });
+        photoBox.replaceChildren.apply(photoBox, order.map(function (k) {
+          return el('div', { class: 'meal' }, [el('strong', { text: k }), el('div', { style: 'display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:8px' }, groups[k].map(function (p) {
+            var img = el('img', { src: p.url, alt: (p.view || 'Photo') + ', ' + k, loading: 'lazy', style: 'width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:block' });
+            return el('a', { href: p.url, target: '_blank', rel: 'noopener' }, img);
+          }))]);
+        }));
+      }).catch(function () { photoBox.replaceChildren(el('p', { class: 'mute', text: 'Photos could not be loaded.' })); });
+      nodes.push(el('h2', { text: 'Recent training' }));
+      var byDay = {}; j.workouts.forEach(function (w) { var d = w.logged_at.slice(0, 10); (byDay[d] = byDay[d] || []).push(w); });
+      var dayKeys = Object.keys(byDay).sort().reverse().slice(0, 6);
+      nodes.push(el('div', { class: 'card' }, dayKeys.length ? dayKeys.map(function (d) {
+        var names = []; byDay[d].forEach(function (w) { if (names.indexOf(w.exercise_name) < 0) names.push(w.exercise_name); });
+        return el('div', { class: 'meal' }, [el('strong', { text: new Date(d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) }), el('div', { class: 'small mute', text: byDay[d].length + ' sets logged · ' + names.slice(0, 5).join(', ') + (names.length > 5 ? ' …' : '') })]);
+      }) : el('p', { class: 'mute', text: 'No training logged yet.' })));
+      nodes.push(el('h2', { text: 'Food log' }));
+      var mealDays = {}; j.meals.forEach(function (m) { var d = mealDays[m.logged_at.slice(0, 10)] = mealDays[m.logged_at.slice(0, 10)] || { n: 0, kcal: 0, p: 0, names: [] }; d.n++; d.kcal += Number(m.kcal) || 0; d.p += Number(m.protein_g) || 0; if (m.meal_name && d.names.indexOf(m.meal_name) < 0) d.names.push(m.meal_name); });
+      var md = Object.keys(mealDays).sort().reverse().slice(0, 7);
+      nodes.push(el('div', { class: 'card' }, md.length ? md.map(function (d) {
+        var x = mealDays[d];
+        return el('div', { class: 'meal' }, [el('div', { class: 'row' }, [el('strong', { class: 'grow', text: new Date(d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) }),
+          el('span', { class: 'small', text: x.n + (x.n === 1 ? ' meal' : ' meals') + (x.kcal ? ' · ' + Math.round(x.kcal) + ' kcal · ' + Math.round(x.p) + ' g protein' : '') })]),
+          el('div', { class: 'small mute', text: x.names.slice(0, 6).join(', ') })]);
+      }) : el('p', { class: 'mute', text: 'No meals logged yet.' })));
+      if (j.live && j.live.summary) { nodes.push(el('h2', { text: 'Current plan' })); nodes.push(planNode(j.live.summary, j.live.plan)); }
+      show(nodes);
+    }).catch(oops);
+  }
+
+  // ── start ────────────────────────────────────────────────────────────────
+  var m = /^#setup=([A-Za-z0-9_-]{30,100})$/.exec(location.hash);
+  if (m) { setupView(m[1]); return; }
+  if (!S.session) { location.replace(DASH); return; }        // one sign-in screen: the dashboard's
+  function route() {
+    var h = location.hash, c = /^#client=(c_[a-z0-9_]{2,38})$/.exec(h);
+    if (h === '#new') formView(null, null); else if (h === '#templates') templatesView(); else if (h === '#look') lookView(); else if (h === '#switch') switchView(); else if (c) clientView(c[1]); else homeView();
+    document.body.classList.remove('drawer');
+  }
+  window.addEventListener('hashchange', function () { if (S.coach && /^#(new|plans|templates|look|switch|client=)/.test(location.hash)) route(); });
+  call('cpMe').then(function (j) { if (j.ok) { S.coach = j.coach; try { localStorage.setItem('cp_coach_v1', JSON.stringify(j.coach)); } catch (e) {} setHeader(); route(); } }).catch(function (e) { if (e.message !== 'signed_out') loginView('Could not reach the server. Try again.'); });
+})();
+</script>
+</body>
+</html>
