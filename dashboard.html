@@ -11945,6 +11945,8 @@ function _cd3PhotoCompareBaselineLatest(storageKey) {
 }
 
 function renderWorkoutLogTable(rows) {
+  const X = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  rows = (rows || []).map(r => Object.assign({}, r, { exerciseName: X(r.exerciseName), setsActual: X(r.setsActual), repsActual: X(r.repsActual), weightActual: X(r.weightActual), rpeActual: X(r.rpeActual), phase: X(r.phase) }));
   if (!rows.length) return '<div class="log-empty">No workouts logged yet.</div>';
   return `
     <table class="log-table">
@@ -11966,6 +11968,8 @@ function renderWorkoutLogTable(rows) {
 }
 
 function renderMealLogTable(rows) {
+  const X = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  rows = (rows || []).map(r => Object.assign({}, r, { mealName: X(r.mealName), status: /^[a-z_]{1,20}$/.test(String(r.status || '')) ? r.status : 'ate', calActual: X(r.calActual), pActual: X(r.pActual), cActual: X(r.cActual), fActual: X(r.fActual), swapDesc: X(r.swapDesc), notes: X(r.notes), week: X(r.week) }));
   if (!rows.length) return '<div class="log-empty">No meals logged yet.</div>';
   return `
     <table class="log-table">
