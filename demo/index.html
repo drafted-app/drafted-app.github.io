@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drafted for coaches</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE occasion, product site for working coaches: confident, plain, no hype
+   IDEA an architect's drafting sheet: blueprint ground, fine grid, the product laid on it like a drawing
+   PICTURE the real dashboard with the client's phone app overlapping it, on the blueprint grid
+   COLOUR blueprint blue field, white paper, ink; one signal yellow for prices and the call to action
+   TYPE Archivo 800 display + Inter text
+   LAYOUT laptop: title across the top of the blueprint band, picture beneath full width; phone: title, picture, then sections stacked */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0c1220);--ink:light-dark(#0e1726,#e9eef7);--soft:light-dark(#4a5568,#a9b4c6);--line:light-dark(#dfe5ee,#243049);--card:light-dark(#f5f8fc,#121b2e);--blue:#0b3d91;--blue2:#0a3380;--grid:rgba(255,255,255,.09);--sun:#ffd23f}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:clip}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;letter-spacing:-.02em;margin:0;line-height:1.08;text-wrap:balance}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:800}
+h2{font-size:clamp(28px,3.4vw,40px);font-weight:800}
+h3{font-size:20px;font-weight:700}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto}
+.band{padding:clamp(36px,5vw,80px) max(5vw,16px)}
+nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px max(5vw,16px);background:var(--blue);color:#fff}
+nav b{font:800 22px Archivo,sans-serif;letter-spacing:-.02em;margin-right:auto}
+nav a{color:#fff;text-decoration:none;opacity:.85;font-weight:500}
+nav a:hover,nav a:focus-visible{opacity:1;text-decoration:underline}
+.hero{background-color:var(--blue);color:#fff;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;padding-bottom:0}
+.hero .top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
+.hero p.lead{font-size:19px;color:#dbe6ff;max-width:34em}
+.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:10px;background:var(--sun);color:#1a1400;font-weight:700;text-decoration:none;border:0;font-size:16px}
+.cta:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.22);border-radius:12px;overflow:hidden}
+.facts div{background:var(--blue2);padding:14px 16px}
+.facts strong{display:block;font:800 28px Archivo,sans-serif;white-space:nowrap}
+.facts span{font-size:14px;color:#c9d7f5}
+.stage{position:relative;margin-top:44px;padding-bottom:0}
+.stage .desk{border-radius:14px 14px 0 0;border:1px solid rgba(255,255,255,.35);border-bottom:0;box-shadow:0 -1px 0 rgba(255,255,255,.2);width:86%;aspect-ratio:1280/860;object-fit:cover;object-position:top}
+.stage .phone{position:absolute;right:0;bottom:-40px;width:23%;aspect-ratio:390/800;object-fit:cover;object-position:top;border-radius:28px;border:8px solid #0e1726;box-shadow:0 24px 50px rgba(0,0,0,.35)}
+.note{font-size:13px;color:var(--soft)}
+.hero .note{color:#c9d7f5;margin-top:12px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:28px;counter-reset:s}
+.step{border-top:3px solid var(--blue);padding-top:14px}
+:root[data-theme=dark] .step,.step{border-top-color:light-dark(var(--blue),#6f9bff)}
+.step h3{margin-bottom:6px}
+.step h3::before{counter-increment:s;content:counter(s) ". ";color:light-dark(var(--blue),#6f9bff)}
+.step p{color:var(--soft)}
+.tour{display:grid;gap:56px;margin-top:36px}
+.shot{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:36px;align-items:center}
+.shot.flip{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
+.shot.flip figure{order:2}
+figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+figure img{width:100%;object-fit:cover;object-position:top}
+figure.tall img{aspect-ratio:1280/1000}
+figure.mid img{aspect-ratio:1280/860}
+figure.short img{aspect-ratio:1280/600}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;border:0;background:none}
+.pair img{border:1px solid var(--line);border-radius:22px;aspect-ratio:390/820}
+.shot ul{margin:14px 0 0;padding-left:20px;color:var(--soft)}
+.shot li{margin:4px 0}
+.inc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 36px;margin-top:24px}
+.inc div{padding:14px 0;border-bottom:1px solid var(--line)}
+.inc b{display:block}
+.inc span{color:var(--soft);font-size:15px}
+.price{background:var(--card)}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
+.tier{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;gap:8px}
+.tier.hot{border:2px solid light-dark(var(--blue),#6f9bff)}
+.tier .n{font-weight:600}
+.tier .p{font:800 40px Archivo,sans-serif;white-space:nowrap}
+.tier .p small{font:500 15px Inter,sans-serif;color:var(--soft)}
+.tier .c{color:var(--soft);font-size:15px}
+.tag{align-self:flex-start;font-size:13px;font-weight:600;background:var(--sun);color:#1a1400;border-radius:99px;padding:2px 10px}
+.found{margin-top:18px;padding:18px 20px;border-radius:12px;background:var(--blue);color:#fff}
+.found b{color:var(--sun)}
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px;margin-top:20px}
+details{border-bottom:1px solid var(--line);padding:14px 0}
+summary{cursor:pointer;font-weight:600;min-height:28px}
+summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+details p{color:var(--soft);margin-top:8px}
+.end{background:var(--blue);color:#fff;text-align:left}
+.end .row{display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.end p{color:#dbe6ff;max-width:36em;margin-top:10px}
+footer{padding:20px max(5vw,16px);font-size:13px;color:var(--soft)}
+@media(max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}.inc{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.hero .top,.shot,.shot.flip,.faq,.inc{grid-template-columns:minmax(0,1fr)}.shot.flip figure{order:0}.stage .desk{width:100%}.stage .phone{width:34%;bottom:-24px;border-width:5px;border-radius:18px}nav a.opt{display:none}}
+@media(max-width:480px){.steps,.tiers{grid-template-columns:minmax(0,1fr)}.facts strong{font-size:22px}}
+@media(prefers-reduced-motion:no-preference){.stage .phone{animation:rise .9s cubic-bezier(.2,.7,.2,1) both .2s}@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<nav aria-label="Main">
+  <b>Drafted</b>
+  <a class="opt" href="#how">How it works</a>
+  <a class="opt" href="#tour">Tour</a>
+  <a href="#pricing">Pricing</a>
+</nav>
+
+<header class="band hero">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Full client plans in minutes, under your own brand.</h1>
+        <p class="lead" style="margin-top:16px">Drafted builds each client's training, meals, calories and macros from one short form. You check it, change what you like and publish it to an app with your name on it. Your dashboard then shows who needs you today.</p>
+        <p style="margin-top:24px"><a class="cta" href="#pricing">See pricing</a></p>
+      </div>
+      <div class="facts" role="list">
+        <div role="listitem"><strong>12 or 16</strong><span>week plans</span></div>
+        <div role="listitem"><strong>4</strong><span>training splits</span></div>
+        <div role="listitem"><strong>40+</strong><span>dishes, 6 diets</span></div>
+      </div>
+    </div>
+    <div class="stage">
+      <img class="desk" src="img/desk-dash-today.jpg" alt="The coach dashboard's Today page: six clients, who needs a review, and two flagged as at risk">
+      <img class="phone" src="img/phone-app.jpg" alt="The client's app home screen under the coach's brand, with today's workout, calories and weigh-in trend">
+    </div>
+  </div>
+</header>
+
+<section class="band" id="how" style="padding-top:72px">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><h3>They sign up</h3><p>Send your sign-up link or put it in your bio. Clients answer about two minutes of questions: body, goal, training days, foods they like and won't eat.</p></div>
+      <div class="step"><h3>The plan is built</h3><p>Training, meals, calories and macros for every phase. Allergies and diet are respected, and portions are sized to hit the numbers.</p></div>
+      <div class="step"><h3>You check and publish</h3><p>Change any exercise, swap any meal or set your own calories. Nothing reaches the client until you press publish.</p></div>
+      <div class="step"><h3>You coach</h3><p>They log workouts, meals, weigh-ins and check-ins in the app. Your dashboard sorts out who needs you today.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="tour" style="padding-top:0">
+  <div class="wrap">
+    <h2>A look inside</h2>
+    <div class="tour">
+      <div class="shot">
+        <figure class="tall"><img src="img/desk-new.jpg" alt="The new client form: client details, goal, training split, menu, allergies and diet" loading="lazy"></figure>
+        <div><h3>One form, whole plan</h3><p style="margin-top:8px">Fill it in yourself or let the client do it through your sign-up link.</p>
+          <ul><li>Lose fat or build muscle, 12 or 16 weeks</li><li>3 to 5 days, gym or home</li><li>Everyday, allergy-friendly or vegetarian menus</li><li>Likes, dislikes and foods to include</li><li>Your own calories if you'd rather set them</li></ul></div>
+      </div>
+      <div class="shot flip">
+        <figure class="tall"><img src="img/desk-client.jpg" alt="One client's page: weight now, change since start, weight chart against the planned line, and weekly check-ins" loading="lazy"></figure>
+        <div><h3>Every client on one page</h3><p style="margin-top:8px">Their weight against where the plan expects them to be, every check-in, recent training and food, and the full plan. Change the plan from here, and a "what changed" note goes to the client with it.</p></div>
+      </div>
+      <div class="shot">
+        <figure class="pair"><img src="img/phone-app.jpg" alt="Client app home screen" loading="lazy"><img src="img/phone-signup.jpg" alt="The coach's sign-up form on a phone" loading="lazy"></figure>
+        <div><h3>Your app, your name</h3><p style="margin-top:8px">Clients get a phone app with your brand, colour and logo. It covers today's workout, meals, weigh-ins, check-ins and reminders. They add it to their home screen, and there's nothing to download from an app store.</p></div>
+      </div>
+      <div class="shot flip">
+        <figure class="short"><img src="img/desk-look.jpg" alt="Your look settings: brand name, colour and logo, with a preview of the app" loading="lazy"></figure>
+        <div><h3>Set your look once</h3><p style="margin-top:8px">Your brand name, any colour, and your logo, which becomes the app icon on their phone. Nothing in your clients' app mentions Drafted.</p></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:28px">Screens show a sample coach and made-up clients.</p>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <h2>What's included</h2>
+    <div class="inc">
+      <div><b>Plan builder</b><span>Training, meals, calories and macros by phase</span></div>
+      <div><b>Hand edits</b><span>Change exercises, swap meals, set your own numbers</span></div>
+      <div><b>Branded client app</b><span>Your name, colour and logo on their phone</span></div>
+      <div><b>Coach dashboard</b><span>Who needs you today, check-ins, churn signs</span></div>
+      <div><b>Sign-up form</b><span>One link for every new client</span></div>
+      <div><b>Reminders</b><span>Training and meal reminders on the client's phone</span></div>
+      <div><b>Renewals and testimonials</b><span>See who's ending soon and collect reviews</span></div>
+      <div><b>Bring clients over</b><span>Move your current clients across in a batch</span></div>
+      <div><b>Your own login</b><span>Your clients are only ever visible to you</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band price" id="pricing">
+  <div class="wrap">
+    <h2>Pricing</h2>
+    <p style="margin-top:10px;color:var(--soft)">Monthly, in Australian dollars. Every plan includes everything. You only pay more when you have more clients.</p>
+    <div class="tiers">
+      <div class="tier hot"><span class="tag">Start here</span><span class="n">Starter</span><span class="p">$50<small> /month</small></span><span class="c">Up to 10 clients</span></div>
+      <div class="tier"><span class="n">Growing</span><span class="p">$149<small> /month</small></span><span class="c">Up to 30 clients</span></div>
+      <div class="tier"><span class="n">Full roster</span><span class="p">$299<small> /month</small></span><span class="c">Up to 80 clients</span></div>
+      <div class="tier"><span class="n">Teams</span><span class="p">Ask<small></small></span><span class="c">More than 80 clients or several coaches</span></div>
+    </div>
+    <div class="found"><b>Founding coaches:</b> the first five coaches get 60 days free while we refine it with them. After that they keep their tier's founding price for as long as they stay.</div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:56px">
+  <div class="wrap">
+    <h2>Questions coaches ask</h2>
+    <div class="faq">
+      <details><summary>Do I need to be good with tech?</summary><p>No. If you can fill in a form and copy a link, you can run it. We set your account up and send you a link to choose your password.</p></details>
+      <details><summary>Can I change what it builds?</summary><p>Yes. Any exercise, any meal and the calories. Nothing reaches the client until you publish.</p></details>
+      <details><summary>Will my clients see your name?</summary><p>No. They see your brand, your colour and your logo.</p></details>
+      <details><summary>Who can see my clients?</summary><p>Only you. Each coach has their own login, and one coach can never see another's clients.</p></details>
+      <details><summary>Does it take payments from my clients?</summary><p>Not yet. Keep charging clients the way you do now.</p></details>
+      <details><summary>Who is it for?</summary><p>Online and hybrid coaches working with adults on fat loss and muscle gain. Plans are built for clients 18 and over.</p></details>
+      <details><summary>What if I go over my client limit?</summary><p>You'll see a note when you try to add one more client. We move you to the next tier the same day.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="band end">
+  <div class="wrap row">
+    <div><h2>Want a walkthrough?</h2><p>Reply to the message this link came in and we'll show you a live plan being built for one of your own clients.</p></div>
+    <a class="cta" href="#pricing">Back to pricing</a>
+  </div>
+</section>
+<footer>Drafted. Screens show sample data.</footer>
+</body>
+</html>
